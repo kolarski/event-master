@@ -4,11 +4,14 @@ import {
   eventSchema,
   type EventInputType,
   type EventType,
-} from "./events/events";
+} from "./examples/events/events";
+import { EventBus } from "./EventBus";
 
 const em = new EM<EventType, EventInputType>(
   eventSchema,
-  new InMemoryRepository()
+  new InMemoryRepository(),
+  [],
+  new EventBus<EventType>()
 );
 await em.emit({
   type: "page-visited",

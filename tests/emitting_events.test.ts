@@ -5,11 +5,34 @@ import {
   eventSchema,
   type EventInputType,
   type EventType,
-} from "./../src/events/events";
+} from "./../src/examples/events/events";
+import { PageVisitedEventUpgrader } from "../src/examples/upgraders/PageVisited.event-upgrader";
+import type { EventUpgrader } from "../src/interfaces/Upgrader.interface";
+import { EventBus } from "../src/EventBus";
+import type { EventHandler } from "../src/interfaces/EventHandler.type";
+
+const upgraders: Array<EventUpgrader<EventType>> = [
+  new PageVisitedEventUpgrader(),
+  // Add other upgraders here
+];
+
+const pageVisitedHandler: EventHandler<EventType> = async (event) => {
+  if (event.type === "page-visited") {
+    console.log(
+      `Page visited: ${event.payload.url} at date: ${event.payload.visited_date}`
+    );
+  }
+};
+
+// Create an EventBus and register handlers
+const eventBus = new EventBus<EventType>();
+eventBus.subscribe(pageVisitedHandler);
 
 const em = new EM<EventType, EventInputType>(
   eventSchema,
-  new InMemoryRepository<EventType>()
+  new InMemoryRepository<EventType>(),
+  upgraders,
+  eventBus
 );
 
 test("Events Emitting and Projection", async () => {
@@ -58,4 +81,5 @@ test("Events Emitting and Projection", async () => {
     projection.push(event);
   }
   expect(projection.length).toBe(2);
+  // console.log(projection);
 });

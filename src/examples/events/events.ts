@@ -1,10 +1,13 @@
+import { z } from "zod";
+
 import pageVisitedEvent from "./../events/pageVisited.event";
 import scraperStartedEvent from "./../events/scraperStarted.event";
 import scraperFinishedEvent from "./../events/scraperFinished.event";
-import { z, type ZodTypeAny } from "zod";
+import pageVisitedV2Event from "./pageVisited.v2.event";
 
 const eventSchema = z.union([
   pageVisitedEvent,
+  pageVisitedV2Event,
   scraperStartedEvent,
   scraperFinishedEvent,
 ]);
