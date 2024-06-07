@@ -7,6 +7,7 @@ export class InMemoryRepository<Event extends BaseEventType>
 {
   private events: Array<Event> = [];
   private lastProcessedEventIds: Record<string, string | null> = {};
+  private currentSeq: number = 0; // Added currentSeq property
 
   async *projection(query: ProjectionQuery<Event>): AsyncIterable<Event> {
     const filteredEvents = this.events.filter((event) => {
@@ -44,6 +45,7 @@ export class InMemoryRepository<Event extends BaseEventType>
   }
 
   public async emitEvent(event: Event): Promise<void> {
+    event.seq = ++this.currentSeq; // Increment and assign seq
     this.events.push(event);
   }
 

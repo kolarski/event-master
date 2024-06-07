@@ -13,7 +13,6 @@ import type { EventHandler } from "../src/interfaces/EventHandler.type";
 
 const upgraders: Array<EventUpgrader<EventType>> = [
   new PageVisitedEventUpgrader(),
-  // Add other upgraders here
 ];
 
 const pageVisitedHandler: EventHandler<EventType> = async (event) => {
@@ -81,5 +80,6 @@ test("Events Emitting and Projection", async () => {
     projection.push(event);
   }
   expect(projection.length).toBe(2);
-  // console.log(projection);
+  expect(projection.map((i) => i.seq)).toStrictEqual([1, 3]);
+  expect(projection.map((i) => i.version)).toStrictEqual([2, 2]);
 });
