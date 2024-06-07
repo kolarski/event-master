@@ -1,4 +1,4 @@
-import { ZodUnion, type ZodTypeAny } from "zod";
+import { ZodError, ZodUnion, type ZodTypeAny } from "zod";
 import type { Repository } from "./interfaces/Repository.interface.js";
 import type { BaseEventType, BaseInputEventType } from "./events/base.event.js";
 import type { Logger } from "./interfaces/Logger.interface.js";
@@ -53,7 +53,7 @@ export class EM<
    * @param event - The event to emit.
    * @throws Will throw an error if the event emission fails.
    */
-  public async emit(event: InputEvent) {
+  public async emit(event: InputEvent): Promise<void> {
     try {
       const parsedEvent = this.events.parse(event) as Event;
       const upgradedEvent = this.applyUpgrades(parsedEvent);
@@ -64,7 +64,12 @@ export class EM<
       ]);
     } catch (error) {
       // Handle errors appropriately
-      console.error("Failed to emit event:", error);
+      // console.error("Failed to emit event:", error);
+      // throw error; // Re-throw to ensure calling code can handle it
+      if (error instanceof ZodError) {
+        console.error("Failed to emit event:", error.message); // Log only the error message
+      }
+      throw new Error("Event emission failed");
     }
   }
 
