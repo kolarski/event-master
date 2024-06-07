@@ -1,4 +1,4 @@
-import { ZodUnion, z, type ZodTypeAny } from "zod";
+import { ZodUnion, type ZodTypeAny } from "zod";
 import type { Repository } from "./interfaces/Repository.interface.js";
 import type { BaseEventType, BaseInputEventType } from "./events/base.event.js";
 import type { Logger } from "./interfaces/Logger.interface.js";
@@ -19,23 +19,26 @@ export class EM<
   private repo: Repository<Event>;
   private upgraders: EventUpgrader<Event>[];
   private eventBus: EventBus<Event>;
-  private logger: Logger<Event> = new VoidLogger();
+  private logger: Logger<Event>;
 
-  constructor(config: {
+  constructor({
+    events,
+    repository = new InMemoryRepository<Event>(),
+    upgraders = [],
+    eventBus = new EventBus<Event>(),
+    logger = new VoidLogger(),
+  }: {
     events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
-    repository?: InMemoryRepository<Event>;
+    repository?: Repository<Event>;
     upgraders?: Array<EventUpgrader<Event>>;
     eventBus?: EventBus<Event>;
     logger?: Logger<Event>;
   }) {
-    this.events = config.events;
-    this.repo = config.repository || new InMemoryRepository<Event>();
-    this.upgraders = config.upgraders || [];
-    this.eventBus = config.eventBus || new EventBus<Event>();
-
-    if (config.logger) {
-      this.logger = config.logger;
-    }
+    this.events = events;
+    this.repo = repository;
+    this.upgraders = upgraders;
+    this.eventBus = eventBus;
+    this.logger = logger;
   }
 
   private applyUpgrades(event: Event): Event {
@@ -45,14 +48,31 @@ export class EM<
     );
   }
 
+  /**
+   * Emit an event after parsing and applying upgrades.
+   * @param event - The event to emit.
+   * @throws Will throw an error if the event emission fails.
+   */
   public async emit(event: InputEvent) {
-    const parsedEvent = this.events.parse(event) as Event;
-    const upgradedEvent = this.applyUpgrades(parsedEvent);
-    await this.repo.emitEvent(upgradedEvent);
-    await this.eventBus.publish(parsedEvent);
-    await this.logger.logEvent(upgradedEvent);
+    try {
+      const parsedEvent = this.events.parse(event) as Event;
+      const upgradedEvent = this.applyUpgrades(parsedEvent);
+      await this.repo.emitEvent(upgradedEvent);
+      await Promise.all([
+        this.eventBus.publish(parsedEvent),
+        this.logger.logEvent(upgradedEvent),
+      ]);
+    } catch (error) {
+      // Handle errors appropriately
+      console.error("Failed to emit event:", error);
+    }
   }
 
+  /**
+   * Replay events from the repository matching the query.
+   * @param query - The query to filter events.
+   * @returns An async iterable of upgraded events.
+   */
   public async *replay(query: ReplayQuery<Event>): AsyncIterable<Event> {
     for await (const event of this.repo.replay(query)) {
       const upgradedEvent = this.applyUpgrades(event);
@@ -60,26 +80,4 @@ export class EM<
       await this.logger.logProjectionItem(query, upgradedEvent);
     }
   }
-
-  // public async *replay(query: ReplayQuery<Event>): AsyncIterable<Event> {
-  //   if (query.seq?.from && query.seq?.to && query.seq?.from >= query.seq?.to) {
-  //     throw new Error("startSeq must be less than endSeq");
-  //   }
-
-  //   const events = this.repo.projection(query);
-  //   const filteredEvents = [];
-
-  //   for await (const event of events) {
-  //     if (event.seq >= query.seq.from && event.seq <= query.seq?.to) {
-  //       filteredEvents.push(event);
-  //     }
-  //   }
-
-  //   filteredEvents.sort((a, b) => a.seq - b.seq);
-
-  //   for (const event of filteredEvents) {
-  //     yield event;
-  //     await this.logger.logProjectionItem(query, event);
-  //   }
-  // }
 }
