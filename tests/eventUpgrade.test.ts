@@ -22,7 +22,7 @@ beforeEach(() => {
 test("Event Upgrading", async () => {
   const oldEvent: EventInputType = {
     type: "page-visited",
-    entityId: "page-1",
+    aggregateId: "page-1",
     payload: {
       url: "https://example.com",
       visited_date: new Date().toISOString(),
@@ -35,7 +35,7 @@ test("Event Upgrading", async () => {
   await em.emit(oldEvent);
 
   for await (const event of em.replay({
-    entityId: "page-1",
+    aggregateId: "page-1",
     eventTypes: ["page-visited"],
   })) {
     replay.push(event);

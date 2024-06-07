@@ -5,7 +5,7 @@ export default baseEvent
   .extend({
     type: z.literal("page-visited"),
     version: z.literal(1).default(1),
-    entityId: z.string(), // required
+    aggregateId: z.string(), // required
     payload: z.object({
       url: z.string().url(),
       visited_date: z.string().datetime(),

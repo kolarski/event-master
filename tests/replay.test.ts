@@ -19,7 +19,7 @@ test("Events Replay", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      entityId: "page-1",
+      aggregateId: "page-1",
       payload: {
         url: "https://example.com",
         visited_date: new Date().toISOString(),
@@ -29,7 +29,7 @@ test("Events Replay", async () => {
     },
     {
       type: "page-visited",
-      entityId: "page-2",
+      aggregateId: "page-2",
       payload: {
         url: "https://example.com",
         visited_date: new Date().toISOString(),
@@ -39,7 +39,7 @@ test("Events Replay", async () => {
     },
     {
       type: "page-visited",
-      entityId: "page-1",
+      aggregateId: "page-1",
       payload: {
         url: "https://example.com",
         visited_date: new Date().toISOString(),
@@ -54,7 +54,7 @@ test("Events Replay", async () => {
   }
 
   for await (const event of em.replay({
-    entityId: "page-1",
+    aggregateId: "page-1",
     eventTypes: ["page-visited"],
   })) {
     replay.push(event);

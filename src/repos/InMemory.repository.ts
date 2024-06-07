@@ -12,7 +12,8 @@ export class InMemoryRepository<Event extends BaseEventType>
     query: ReplayQuery<Readonly<Event>>
   ): AsyncIterable<Readonly<Event>> {
     const filteredEvents = this.events.filter((event) => {
-      if (query.entityId && event.entityId !== query.entityId) return false;
+      if (query.aggregateId && event.aggregateId !== query.aggregateId)
+        return false;
       if (query.seq?.from && event.seq < query.seq.from) return false;
       if (query.seq?.to && event.seq > query.seq.to) return false;
       if (query.eventTypes && !query.eventTypes.includes(event.type))

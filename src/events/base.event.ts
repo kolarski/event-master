@@ -5,7 +5,7 @@ export const baseEvent = z.object({
     .string()
     .uuid()
     .default(() => crypto.randomUUID()),
-  entityId: z.string().uuid().optional(),
+  aggregateId: z.string().uuid().optional(),
   seq: z
     .number()
     .safe()

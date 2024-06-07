@@ -23,7 +23,7 @@ test("Replay with Multiple Event Types", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      entityId: "page-1",
+      aggregateId: "page-1",
       payload: {
         url: "https://example.com",
         visited_date: new Date().toISOString(),
@@ -33,7 +33,7 @@ test("Replay with Multiple Event Types", async () => {
     },
     {
       type: "broken-link",
-      entityId: "page-1",
+      aggregateId: "page-1",
       payload: {
         url: "https://bad-link.com",
         visited_date: new Date().toISOString(),
@@ -47,7 +47,7 @@ test("Replay with Multiple Event Types", async () => {
   }
 
   for await (const event of em.replay({
-    entityId: "page-1",
+    aggregateId: "page-1",
     eventTypes: ["page-visited", "broken-link"],
   })) {
     replay.push(event);

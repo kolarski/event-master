@@ -32,7 +32,7 @@ beforeEach(() => {
 test("Event Bus and Logging", async () => {
   const event: EventInputType = {
     type: "page-visited",
-    entityId: "page-1",
+    aggregateId: "page-1",
     payload: {
       url: "https://example.com",
       visited_date: new Date().toISOString(),
