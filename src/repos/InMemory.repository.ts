@@ -6,6 +6,7 @@ export class InMemoryRepository<Event extends BaseEventType>
   implements Repository<Event>
 {
   private events: Array<Event> = [];
+  private lastProcessedEventIds: Record<string, string | null> = {};
 
   async *projection(query: ProjectionQuery<Event>): AsyncIterable<Event> {
     const filteredEvents = this.events.filter((event) => {
@@ -48,5 +49,18 @@ export class InMemoryRepository<Event extends BaseEventType>
 
   public async getAllEvents(): Promise<Event[]> {
     return this.events;
+  }
+
+  public async saveLastProcessedEventId(
+    projectionName: string,
+    eventId: string
+  ): Promise<void> {
+    this.lastProcessedEventIds[projectionName] = eventId;
+  }
+
+  public async getLastProcessedEventId(
+    projectionName: string
+  ): Promise<string | null> {
+    return this.lastProcessedEventIds[projectionName] || null;
   }
 }
