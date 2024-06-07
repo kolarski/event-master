@@ -27,12 +27,11 @@ const pageVisitedHandler: EventHandler<EventType> = async (event) => {
 const eventBus = new EventBus<EventType>();
 eventBus.subscribe(pageVisitedHandler);
 
-const em = new EM<EventType, EventInputType>(
-  eventSchema,
-  new InMemoryRepository<EventType>(),
+const em = new EM<EventType, EventInputType>({
+  events: eventSchema,
+  eventBus,
   upgraders,
-  eventBus
-);
+});
 
 test("Events Emitting and Replay", async () => {
   const events: EventInputType[] = [

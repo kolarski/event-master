@@ -4,7 +4,7 @@ import { baseEvent } from "./../../events/base.event";
 export default baseEvent
   .extend({
     type: z.literal("page-visited"),
-    version: z.literal(1),
+    version: z.literal(1).default(1),
     entityId: z.string(), // required
     payload: z.object({
       url: z.string().url(),

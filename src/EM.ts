@@ -4,8 +4,9 @@ import type { BaseEventType, BaseInputEventType } from "./events/base.event.js";
 import type { Logger } from "./interfaces/Logger.interface.js";
 import { VoidLogger } from "./loggers/Void.logger.js";
 import type { EventUpgrader } from "./interfaces/Upgrader.interface.js";
-import type { EventBus } from "./EventBus.js";
+import { EventBus } from "./EventBus.js";
 import type { ReplayQuery } from "./interfaces/ReplayQuery.js";
+import { InMemoryRepository } from "./repos/InMemory.repository.js";
 
 /**
  * The EM class represents the Event Master.
@@ -20,20 +21,20 @@ export class EM<
   private eventBus: EventBus<Event>;
   private logger: Logger<Event> = new VoidLogger();
 
-  constructor(
-    events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>,
-    repo: Repository<Event>,
-    upgraders: EventUpgrader<Event>[],
-    eventBus: EventBus<Event>,
-    logger?: Logger<Event>
-  ) {
-    this.events = events;
-    this.repo = repo;
-    this.upgraders = upgraders;
-    this.eventBus = eventBus;
-    this.logger;
-    if (logger) {
-      this.logger = logger;
+  constructor(config: {
+    events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
+    repository?: InMemoryRepository<Event>;
+    upgraders?: Array<EventUpgrader<Event>>;
+    eventBus?: EventBus<Event>;
+    logger?: Logger<Event>;
+  }) {
+    this.events = config.events;
+    this.repo = config.repository || new InMemoryRepository<Event>();
+    this.upgraders = config.upgraders || [];
+    this.eventBus = config.eventBus || new EventBus<Event>();
+
+    if (config.logger) {
+      this.logger = config.logger;
     }
   }
 
