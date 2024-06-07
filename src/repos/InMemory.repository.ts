@@ -1,17 +1,61 @@
 import type { BaseEventType } from "../events/base.event";
 import type { ProjectionQuery } from "../interfaces/ProjectionQuery";
+import type { ReplayQuery } from "../interfaces/ReplayQuery";
 import type { Repository } from "../interfaces/Repository.interface";
 
 export class InMemoryRepository<Event extends BaseEventType>
   implements Repository<Event>
 {
-  private events: Array<Event> = [];
+  private events: Array<Readonly<Event>> = [];
   private lastProcessedEventIds: Record<string, string | null> = {};
   private currentSeq: number = 0; // Added currentSeq property
 
-  async *projection(query: ProjectionQuery<Event>): AsyncIterable<Event> {
+  // async *projection(query: ProjectionQuery<Event>): AsyncIterable<Event> {
+  //   const filteredEvents = this.events.filter((event) => {
+  //     if (query.entityId && event.entityId !== query.entityId) {
+  //       return false;
+  //     }
+  //     if (query.eventTypes && !query.eventTypes.includes(event.type)) {
+  //       return false;
+  //     }
+  //     if (query.payload) {
+  //       for (const key in query.payload) {
+  //         if (query.payload[key] !== event.payload[key]) {
+  //           return false;
+  //         }
+  //       }
+  //     }
+  //     if (query.createdAt) {
+  //       if (query.createdAt.from && event.createdAt < query.createdAt.from) {
+  //         return false;
+  //       }
+  //       if (query.createdAt.to && event.createdAt > query.createdAt.to) {
+  //         return false;
+  //       }
+  //     }
+  //     return true;
+  //   });
+
+  //   const sortedEvents = filteredEvents.sort(
+  //     (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+  //   );
+
+  //   for (const event of sortedEvents) {
+  //     yield event;
+  //   }
+  // }
+
+  async *replay(
+    query: ReplayQuery<Readonly<Event>>
+  ): AsyncIterable<Readonly<Event>> {
     const filteredEvents = this.events.filter((event) => {
       if (query.entityId && event.entityId !== query.entityId) {
+        return false;
+      }
+      if (query.seq && query.seq.from && event.seq < query.seq.from) {
+        return false;
+      }
+      if (query.seq && query.seq.to && event.seq > query.seq.to) {
         return false;
       }
       if (query.eventTypes && !query.eventTypes.includes(event.type)) {
@@ -36,7 +80,7 @@ export class InMemoryRepository<Event extends BaseEventType>
     });
 
     const sortedEvents = filteredEvents.sort(
-      (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+      (a, b) => new Date(a.createdAt).getTime() - b.createdAt.getTime()
     );
 
     for (const event of sortedEvents) {

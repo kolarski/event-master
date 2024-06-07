@@ -46,7 +46,7 @@ await em.emit({
 });
 
 console.log("Projection...");
-const project = em.projection({
+const project = em.replay({
   eventTypes: ["page-visited"],
 });
 console.log(project);

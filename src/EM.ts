@@ -3,9 +3,9 @@ import type { Repository } from "./interfaces/Repository.interface";
 import type { BaseEventType, BaseInputEventType } from "./events/base.event";
 import type { Logger } from "./interfaces/Logger.interface";
 import { VoidLogger } from "./loggers/Void.logger";
-import type { ProjectionQuery } from "./interfaces/ProjectionQuery";
 import type { EventUpgrader } from "./interfaces/Upgrader.interface";
 import type { EventBus } from "./EventBus";
+import type { ReplayQuery } from "./interfaces/ReplayQuery";
 
 /**
  * The EM class represents the Event Master.
@@ -52,13 +52,33 @@ export class EM<
     await this.logger.logEvent(upgradedEvent);
   }
 
-  public async *projection(
-    query: ProjectionQuery<Event>
-  ): AsyncIterable<Event> {
-    for await (const event of this.repo.projection(query)) {
+  public async *replay(query: ReplayQuery<Event>): AsyncIterable<Event> {
+    for await (const event of this.repo.replay(query)) {
       const upgradedEvent = this.applyUpgrades(event);
       yield upgradedEvent;
       await this.logger.logProjectionItem(query, upgradedEvent);
     }
   }
+
+  // public async *replay(query: ReplayQuery<Event>): AsyncIterable<Event> {
+  //   if (query.seq?.from && query.seq?.to && query.seq?.from >= query.seq?.to) {
+  //     throw new Error("startSeq must be less than endSeq");
+  //   }
+
+  //   const events = this.repo.projection(query);
+  //   const filteredEvents = [];
+
+  //   for await (const event of events) {
+  //     if (event.seq >= query.seq.from && event.seq <= query.seq?.to) {
+  //       filteredEvents.push(event);
+  //     }
+  //   }
+
+  //   filteredEvents.sort((a, b) => a.seq - b.seq);
+
+  //   for (const event of filteredEvents) {
+  //     yield event;
+  //     await this.logger.logProjectionItem(query, event);
+  //   }
+  // }
 }

@@ -34,7 +34,7 @@ const em = new EM<EventType, EventInputType>(
   eventBus
 );
 
-test("Events Emitting and Projection", async () => {
+test("Events Emitting and Replay", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
@@ -71,15 +71,15 @@ test("Events Emitting and Projection", async () => {
   for (const event of events) {
     await em.emit(event);
   }
-  console.log("Projection...");
-  const projection: EventType[] = [];
-  for await (const event of em.projection({
+  console.log("Replayed Events...");
+  const replay: EventType[] = [];
+  for await (const event of em.replay({
     entityId: "page-1",
     eventTypes: ["page-visited"],
   })) {
-    projection.push(event);
+    replay.push(event);
   }
-  expect(projection.length).toBe(2);
-  expect(projection.map((i) => i.seq)).toStrictEqual([1, 3]);
-  expect(projection.map((i) => i.version)).toStrictEqual([2, 2]);
+  expect(replay.length).toBe(2);
+  expect(replay.map((i) => i.seq)).toStrictEqual([1, 3]);
+  expect(replay.map((i) => i.version)).toStrictEqual([2, 2]);
 });

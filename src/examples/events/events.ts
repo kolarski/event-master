@@ -12,8 +12,8 @@ const eventSchema = z.union([
   scraperFinishedEvent,
 ]);
 
-type EventType = z.infer<typeof eventSchema>;
 type EventInputType = z.input<typeof eventSchema>;
+type EventType = z.output<typeof eventSchema>;
 
 export { eventSchema };
 export type { EventType, EventInputType };
