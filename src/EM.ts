@@ -1,11 +1,11 @@
 import { ZodUnion, z, type ZodTypeAny } from "zod";
-import type { Repository } from "./interfaces/Repository.interface";
-import type { BaseEventType, BaseInputEventType } from "./events/base.event";
-import type { Logger } from "./interfaces/Logger.interface";
-import { VoidLogger } from "./loggers/Void.logger";
-import type { EventUpgrader } from "./interfaces/Upgrader.interface";
-import type { EventBus } from "./EventBus";
-import type { ReplayQuery } from "./interfaces/ReplayQuery";
+import type { Repository } from "./interfaces/Repository.interface.js";
+import type { BaseEventType, BaseInputEventType } from "./events/base.event.js";
+import type { Logger } from "./interfaces/Logger.interface.js";
+import { VoidLogger } from "./loggers/Void.logger.js";
+import type { EventUpgrader } from "./interfaces/Upgrader.interface.js";
+import type { EventBus } from "./EventBus.js";
+import type { ReplayQuery } from "./interfaces/ReplayQuery.js";
 
 /**
  * The EM class represents the Event Master.

@@ -1,6 +1,6 @@
-import type { BaseEventType } from "../events/base.event";
-import type { Logger } from "../interfaces/Logger.interface";
-import type { ProjectionQuery } from "../interfaces/ProjectionQuery";
+import type { BaseEventType } from "../events/base.event.js";
+import type { Logger } from "../interfaces/Logger.interface.js";
+import type { ProjectionQuery } from "../interfaces/ProjectionQuery.js";
 
 export class VoidLogger<Event extends BaseEventType> implements Logger<Event> {
   public async logEvent(event: Event): Promise<void> {}

@@ -1,4 +1,4 @@
-import type { BaseEventType } from "../events/base.event";
+import type { BaseEventType } from "../events/base.event.js";
 
 export type ProjectionQuery<Event extends BaseEventType> = {
   entityId?: Event["entityId"];

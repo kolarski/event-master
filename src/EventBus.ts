@@ -1,5 +1,5 @@
-import type { BaseEventType } from "./events/base.event";
-import type { EventHandler } from "./interfaces/EventHandler.type";
+import type { BaseEventType } from "./events/base.event.js";
+import type { EventHandler } from "./interfaces/EventHandler.type.js";
 
 export class EventBus<Event extends BaseEventType> {
   private handlers: EventHandler<Event>[] = [];

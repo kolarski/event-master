@@ -1,6 +1,5 @@
-import type { BaseEventType } from "../events/base.event";
-import type { ProjectionQuery } from "./ProjectionQuery";
-import type { ReplayQuery } from "./ReplayQuery";
+import type { BaseEventType } from "../events/base.event.js";
+import type { ReplayQuery } from "./ReplayQuery.js";
 
 export interface Repository<Event extends BaseEventType> {
   emitEvent(event: Event): Promise<void>;
