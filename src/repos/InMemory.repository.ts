@@ -1,6 +1,7 @@
 import type { BaseEventType } from "../events/base.event";
 import type { ReplayQuery } from "../interfaces/ReplayQuery";
 import type { Repository } from "../interfaces/Repository.interface";
+import { Mutex } from "../utils/Mutex";
 
 interface Stream {
   id: string;
@@ -18,6 +19,7 @@ export class InMemoryRepository<Event extends BaseEventType>
   private streams: Array<Stream> = [];
   private lastProcessedEventIds: Record<string, string | null> = {};
   private currentSeq: number = 0;
+  private seqMutex = new Mutex();
 
   async validateEventsTable(): Promise<void> {
     this.events = [];
@@ -62,8 +64,26 @@ export class InMemoryRepository<Event extends BaseEventType>
   }
 
   public async emitEvent(event: Event): Promise<void> {
-    event.seq = ++this.currentSeq;
-    this.events.push(event);
+    const unlock = await this.seqMutex.lock();
+    try {
+      event.seq = ++this.currentSeq;
+      this.events.push(event);
+    } finally {
+      unlock();
+    }
+  }
+
+  // It should be transactional
+  public async emitEvents(events: Array<Event>): Promise<void> {
+    const unlock = await this.seqMutex.lock();
+    try {
+      for (const event of events) {
+        event.seq = ++this.currentSeq;
+        this.events.push(event);
+      }
+    } finally {
+      unlock();
+    }
   }
 
   public async getAllEvents(): Promise<Event[]> {
