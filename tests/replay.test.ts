@@ -63,7 +63,7 @@ test("Events Replay", async () => {
   expect(replay.length).toBe(2);
   expect(replay.map((i) => i.seq)).toStrictEqual([1, 3]);
 
-  expect(await em.getAllStreams()).toStrictEqual([
+  expect(await Array.fromAsync(em.getAllStreams())).toStrictEqual([
     {
       id: "page-1",
       seq: 1,
@@ -102,7 +102,7 @@ test("Events Replay", async () => {
     },
   });
 
-  expect(await em.getAllStreams()).toStrictEqual([
+  expect(await Array.fromAsync(em.getAllStreams())).toStrictEqual([
     {
       id: "page-1",
       seq: 2,

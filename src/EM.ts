@@ -7,6 +7,7 @@ import type { EventUpgrader } from "./interfaces/Upgrader.interface.js";
 import { EventBus } from "./EventBus.js";
 import type { ReplayQuery } from "./interfaces/ReplayQuery.js";
 import { InMemoryRepository } from "./repos/InMemory.repository.js";
+import type { Stream } from "./interfaces/Stream.interface.js";
 
 /**
  * The EM class represents the Event Master.
@@ -126,7 +127,11 @@ export class EM<
     }
   }
 
-  public async getAllStreams() {
-    return await this.repo.getAllStreams();
+  public getAllStreams(): AsyncIterable<Stream> {
+    return this.repo.getAllStreams();
+  }
+
+  public getAllEvents(): AsyncIterable<Event> {
+    return this.repo.getAllEvents();
   }
 }

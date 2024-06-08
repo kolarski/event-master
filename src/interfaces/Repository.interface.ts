@@ -8,7 +8,6 @@ export interface Repository<Event extends BaseEventType> {
   emitEvent(event: Event): Promise<void>;
   emitEvents(events: Array<Event>): Promise<void>; // Transactional
   replay(query: ReplayQuery<Event>): AsyncIterable<Event>;
-  getAllEvents(): Promise<Array<Event>>;
-  getLastProcessedEventId(projectionName: string): Promise<string | null>;
-  getAllStreams(): Promise<Stream[]>;
+  getAllEvents(): AsyncIterable<Event>;
+  getAllStreams(): AsyncIterable<Stream>;
 }

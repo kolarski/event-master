@@ -12,7 +12,6 @@ export class InMemoryRepository<Event extends BaseEventType>
 {
   private events: Array<Readonly<Event>> = [];
   private streams: Array<Stream> = [];
-  private lastProcessedEventIds: Record<string, string | null> = {};
   private currentSeq: number = 0;
   private seqMutex = new Mutex();
 
@@ -69,8 +68,16 @@ export class InMemoryRepository<Event extends BaseEventType>
     }
   }
 
-  public async getAllStreams(): Promise<Stream[]> {
-    return this.streams;
+  public async *getAllEvents(): AsyncIterable<Event> {
+    for (const event of this.events) {
+      yield event;
+    }
+  }
+
+  public async *getAllStreams(): AsyncIterable<Stream> {
+    for (const stream of this.streams) {
+      yield stream;
+    }
   }
 
   private updateStream(event: Event): void {
@@ -102,22 +109,5 @@ export class InMemoryRepository<Event extends BaseEventType>
     for (const event of events) {
       this.emitEvent(event);
     }
-  }
-
-  public async getAllEvents(): Promise<Event[]> {
-    return this.events;
-  }
-
-  public async saveLastProcessedEventId(
-    projectionName: string,
-    eventId: string
-  ): Promise<void> {
-    this.lastProcessedEventIds[projectionName] = eventId;
-  }
-
-  public async getLastProcessedEventId(
-    projectionName: string
-  ): Promise<string | null> {
-    return this.lastProcessedEventIds[projectionName] || null;
   }
 }
