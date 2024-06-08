@@ -9,10 +9,10 @@ let replay: EventType[] = [];
 
 const upgraders = [new PageVisitedEventUpgrader()];
 
-beforeEach(() => {
+beforeEach(async () => {
   replay = [];
   const eventBus = new EventBus<EventType>();
-  em = new EM<EventType, EventInputType>({
+  em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
     eventBus,
     upgraders,

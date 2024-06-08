@@ -20,8 +20,36 @@ export class EM<
   private upgraders: EventUpgrader<Event>[];
   private eventBus: EventBus<Event>;
   private logger: Logger<Event>;
+  private isInitialized: boolean = false;
 
-  constructor({
+  public static async create<
+    Event extends BaseEventType,
+    InputEvent extends BaseInputEventType
+  >({
+    events,
+    repository = new InMemoryRepository<Event>(),
+    upgraders = [],
+    eventBus = new EventBus<Event>(),
+    logger = new VoidLogger(),
+  }: {
+    events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
+    repository?: Repository<Event>;
+    upgraders?: Array<EventUpgrader<Event>>;
+    eventBus?: EventBus<Event>;
+    logger?: Logger<Event>;
+  }): Promise<EM<Event, InputEvent>> {
+    const em = new EM<Event, InputEvent>({
+      events,
+      repository,
+      upgraders,
+      eventBus,
+      logger,
+    });
+    await em.init();
+    return em;
+  }
+
+  private constructor({
     events,
     repository = new InMemoryRepository<Event>(),
     upgraders = [],
@@ -41,6 +69,12 @@ export class EM<
     this.logger = logger;
   }
 
+  public async init(): Promise<void> {
+    this.repo.validateEventsTable();
+    this.repo.validateStreamsTable();
+    this.isInitialized = true;
+  }
+
   private applyUpgrades(event: Event): Event {
     return this.upgraders.reduce(
       (upgradedEvent, upgrader) => upgrader.upgrade(upgradedEvent),
@@ -54,6 +88,9 @@ export class EM<
    * @throws Will throw an error if the event emission fails.
    */
   public async emit(event: InputEvent): Promise<void> {
+    if (!this.isInitialized) {
+      throw new Error("EM is not initialized. Please call EM.init() first.");
+    }
     try {
       const parsedEvent = this.events.parse(event) as Event;
       const upgradedEvent = this.applyUpgrades(parsedEvent);
@@ -79,6 +116,9 @@ export class EM<
    * @returns An async iterable of upgraded events.
    */
   public async *replay(query: ReplayQuery<Event>): AsyncIterable<Event> {
+    if (!this.isInitialized) {
+      throw new Error("EM is not initialized. Please call EM.init() first.");
+    }
     for await (const event of this.repo.replay(query)) {
       const upgradedEvent = this.applyUpgrades(event);
       yield upgradedEvent;

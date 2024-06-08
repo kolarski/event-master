@@ -8,9 +8,9 @@ let em: EM<EventType, EventInputType>;
 
 const upgraders = [new PageVisitedEventUpgrader()];
 
-beforeEach(() => {
+beforeEach(async () => {
   const eventBus = new EventBus<EventType>();
-  em = new EM<EventType, EventInputType>({
+  em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
     eventBus,
     upgraders,

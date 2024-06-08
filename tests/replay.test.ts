@@ -6,10 +6,10 @@ import { EventBus } from "../src/EventBus";
 let em: EM<EventType, EventInputType>;
 let replay: EventType[] = [];
 
-beforeEach(() => {
+beforeEach(async () => {
   replay = [];
   const eventBus = new EventBus<EventType>();
-  em = new EM<EventType, EventInputType>({
+  em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
     eventBus,
   });

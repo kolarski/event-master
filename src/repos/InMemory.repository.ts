@@ -1,12 +1,33 @@
 import type { BaseEventType } from "../events/base.event";
 import type { ReplayQuery } from "../interfaces/ReplayQuery";
 import type { Repository } from "../interfaces/Repository.interface";
+
+interface Stream {
+  id: string;
+  type: string;
+  seq: number;
+}
+
+/**
+ * An in-memory implementation of the Repository interface.
+ */
 export class InMemoryRepository<Event extends BaseEventType>
   implements Repository<Event>
 {
   private events: Array<Readonly<Event>> = [];
+  private streams: Array<Stream> = [];
   private lastProcessedEventIds: Record<string, string | null> = {};
   private currentSeq: number = 0;
+
+  async validateEventsTable(): Promise<void> {
+    this.events = [];
+    return;
+  }
+
+  async validateStreamsTable(): Promise<void> {
+    this.streams = [];
+    return;
+  }
 
   async *replay(
     query: ReplayQuery<Readonly<Event>>

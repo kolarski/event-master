@@ -18,12 +18,12 @@ const pageVisitedHandler: EventHandler<EventType> = async (event) => {
   }
 };
 
-beforeEach(() => {
+beforeEach(async () => {
   capturedLogs = [];
   const eventBus = new EventBus<EventType>();
   eventBus.subscribe(pageVisitedHandler);
 
-  em = new EM<EventType, EventInputType>({
+  em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
     eventBus,
   });

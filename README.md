@@ -69,7 +69,7 @@ const pageMissingEvent = baseEvent
 const eventSchema = z.union([pageVisitedEvent, pageMissingEvent]);
 
 // Create an instance of EM with the required configurations
-const em = new EM({
+const em = EM.create({
   events: eventSchema,
 });
 ```
@@ -171,7 +171,7 @@ class CustomRepository<Event extends BaseEventType>
 }
 
 // Use the custom repository in the EM instance
-const em = new EM({
+const em = EM.create({
   events: eventSchema,
   repository: new CustomRepository(),
 });
@@ -207,7 +207,7 @@ class CustomLogger<Event extends BaseEventType> implements Logger<Event> {
 }
 
 // Use the custom logger in the EM instance
-const em = new EM({
+const em = EM.create({
   events: eventSchema,
   logger: new CustomLogger(),
 });
@@ -274,7 +274,7 @@ class PageVisitedEventUpgrader
 }
 
 // Use the event upgrader in the EM instance
-const em = new EM({
+const em = EM.create({
   events: eventSchema,
   upgraders: [new PageVisitedEventUpgrader()],
 });
@@ -313,7 +313,7 @@ const userRegisteredEvent = baseEvent
 
 const eventSchema = z.union([pageVisitedEvent, userRegisteredEvent]);
 
-const em = new EM({
+const em = EM.create({
   events: eventSchema,
 });
 ```
