@@ -56,7 +56,17 @@ const pageVisitedEvent = baseEvent
   })
   .readonly();
 
-const eventSchema = z.union([pageVisitedEvent]);
+const pageMissingEvent = baseEvent
+  .extend({
+    type: z.literal("page-missing"),
+    payload: z.object({
+      url: z.string().url(),
+      visited_date: z.string().datetime(),
+    }),
+  })
+  .readonly();
+
+const eventSchema = z.union([pageVisitedEvent, pageMissingEvent]);
 
 // Create an instance of EM with the required configurations
 const em = new EM({
