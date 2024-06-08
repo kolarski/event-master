@@ -116,7 +116,9 @@ export class EM<
    * @param query - The query to filter events.
    * @returns An async iterable of upgraded events.
    */
-  public async *replay(query: ReplayQuery<Event>): AsyncIterable<Event> {
+  public async *replay(
+    query: ReplayQuery<Event>
+  ): AsyncIterable<Readonly<Event>> {
     if (!this.isInitialized) {
       throw new Error("EM is not initialized. Please call EM.init() first.");
     }
@@ -131,7 +133,7 @@ export class EM<
     return this.repo.getAllStreams();
   }
 
-  public getAllEvents(): AsyncIterable<Event> {
+  public getAllEvents(): AsyncIterable<Readonly<Event>> {
     return this.repo.getAllEvents();
   }
 }

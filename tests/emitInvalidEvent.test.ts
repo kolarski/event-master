@@ -20,7 +20,7 @@ beforeEach(async () => {
 test("Emit Invalid Event", async () => {
   const invalidEvent = {
     type: "invalid-type",
-    aggregateId: "page-1",
+    streamId: "page-1",
     payload: {
       url: "invalid-url",
       visited_date: "not-a-date",
@@ -35,7 +35,7 @@ test("Emit Invalid Event", async () => {
 test("Emit Invalid Event", async () => {
   const invalidEvent = {
     type: "page-visited",
-    aggregateId: 42,
+    streamId: 42,
     payload: {
       url: "invalid-url",
       visited_date: "not-a-date",

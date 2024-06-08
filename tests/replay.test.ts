@@ -19,7 +19,7 @@ test("Events Replay", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      aggregateId: "page-1",
+      streamId: "page-1",
       payload: {
         url: "https://example.com",
         visited_date: new Date().toISOString(),
@@ -29,7 +29,7 @@ test("Events Replay", async () => {
     },
     {
       type: "page-visited",
-      aggregateId: "page-2",
+      streamId: "page-2",
       payload: {
         url: "https://example.com",
         visited_date: new Date().toISOString(),
@@ -39,7 +39,7 @@ test("Events Replay", async () => {
     },
     {
       type: "page-visited",
-      aggregateId: "page-1",
+      streamId: "page-1",
       payload: {
         url: "https://example.com",
         visited_date: new Date().toISOString(),
@@ -54,7 +54,7 @@ test("Events Replay", async () => {
   }
 
   for await (const event of em.replay({
-    aggregateId: "page-1",
+    streamId: "page-1",
     eventTypes: ["page-visited"],
   })) {
     replay.push(event);
@@ -79,8 +79,8 @@ test("Events Replay", async () => {
   expect(
     em.emit({
       type: "page-visited",
-      aggregateId: "page-1",
-      expected_stream_seq: 0,
+      streamId: "page-1",
+      expectedStreamSeq: 0,
       payload: {
         url: "https://example.com",
         visited_date: new Date().toISOString(),
@@ -92,8 +92,8 @@ test("Events Replay", async () => {
 
   await em.emit({
     type: "page-visited",
-    aggregateId: "page-1",
-    expected_stream_seq: 1,
+    streamId: "page-1",
+    expectedStreamSeq: 1,
     payload: {
       url: "https://example.com",
       visited_date: new Date().toISOString(),

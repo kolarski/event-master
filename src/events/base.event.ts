@@ -5,7 +5,7 @@ export const baseEvent = z.object({
     .string()
     .uuid()
     .default(() => crypto.randomUUID()),
-  aggregateId: z.string().uuid().optional(),
+  streamId: z.string().uuid().optional(),
   seq: z
     .number()
     .safe()
@@ -15,7 +15,7 @@ export const baseEvent = z.object({
     .optional()
     .default(0)
     .describe("Unique auto-incrementing sequence number for each event"),
-  expected_stream_seq: z
+  expectedStreamSeq: z
     .number()
     .safe()
     .finite()

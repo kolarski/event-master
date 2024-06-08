@@ -29,8 +29,7 @@ export class InMemoryRepository<Event extends BaseEventType>
     query: ReplayQuery<Readonly<Event>>
   ): AsyncIterable<Readonly<Event>> {
     const filteredEvents = this.events.filter((event) => {
-      if (query.aggregateId && event.aggregateId !== query.aggregateId)
-        return false;
+      if (query.streamId && event.streamId !== query.streamId) return false;
       if (query.seq?.from && event.seq < query.seq.from) return false;
       if (query.seq?.to && event.seq > query.seq.to) return false;
       if (query.eventTypes && !query.eventTypes.includes(event.type))
@@ -81,22 +80,22 @@ export class InMemoryRepository<Event extends BaseEventType>
   }
 
   private updateStream(event: Event): void {
-    if (event.aggregateId) {
-      const index = this.streams.findIndex((s) => s.id === event.aggregateId);
+    if (event.streamId) {
+      const index = this.streams.findIndex((s) => s.id === event.streamId);
       if (index === -1) {
         this.streams.push({
-          id: event.aggregateId,
+          id: event.streamId,
           type: event.type,
           seq: 0,
         });
       } else {
         const stream = this.streams[index];
         if (
-          typeof event.expected_stream_seq !== "undefined" &&
-          stream.seq !== event.expected_stream_seq
+          typeof event.expectedStreamSeq !== "undefined" &&
+          stream.seq !== event.expectedStreamSeq
         ) {
           throw new Error(
-            `Cannot emit event with expected_stream_seq = ${event.expected_stream_seq}. Stream has seq = ${stream.seq}`
+            `Cannot emit event with expectedStreamSeq = ${event.expectedStreamSeq}. Stream has seq = ${stream.seq}`
           );
         }
         stream.seq += 1;

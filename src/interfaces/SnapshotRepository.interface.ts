@@ -1,4 +1,4 @@
 export interface SnapshotRepository<Aggregate> {
-  saveSnapshot(aggregateId: string, snapshot: Aggregate): Promise<void>;
-  getLatestSnapshot(aggregateId: string): Promise<Aggregate | null>;
+  saveSnapshot(streamId: string, snapshot: Aggregate): Promise<void>;
+  getLatestSnapshot(streamId: string): Promise<Aggregate | null>;
 }

@@ -103,7 +103,7 @@ Emit events using the EM instance.
 ```typescript
 const event = {
   type: "page-visited",
-  aggregateId: "page-1",
+  streamId: "page-1",
   payload: {
     url: "https://example.com",
     visited_date: new Date().toISOString(),
@@ -119,7 +119,7 @@ Replay events to reconstruct application state.
 
 ```typescript
 async function replayEvents() {
-  for await (const event of em.replay({ aggregateId: "page-1" })) {
+  for await (const event of em.replay({ streamId: "page-1" })) {
     console.log(`Replayed event: ${event.type} at ${event.seq}`);
   }
 }
@@ -151,8 +151,7 @@ class CustomRepository<Event extends BaseEventType>
 
   async *replay(query: ReplayQuery<Event>): AsyncIterable<Event> {
     for (const event of this.events) {
-      if (query.aggregateId && event.aggregateId !== query.aggregateId)
-        continue;
+      if (query.streamId && event.streamId !== query.streamId) continue;
       if (query.seq && query.seq.from && event.seq < query.seq.from) continue;
       if (query.seq && query.seq.to && event.seq > query.seq.to) continue;
       yield event;
@@ -225,7 +224,7 @@ import { z } from "zod";
 const PageVisitedEvent = z.object({
   type: z.literal("page-visited"),
   version: z.literal(1),
-  aggregateId: z.string(),
+  streamId: z.string(),
   payload: z.object({
     url: z.string().url(),
     visited_date: z.string().datetime(),
@@ -235,7 +234,7 @@ const PageVisitedEvent = z.object({
 const PageVisitedV2Event = z.object({
   type: z.literal("page-visited"),
   version: z.literal(2),
-  aggregateId: z.string(),
+  streamId: z.string(),
   payload: z.object({
     url: z.string().url(),
     visited_date: z.string().datetime(),
@@ -326,11 +325,11 @@ Event projections allow you to create derived data by replaying events.
 async function projectEvents() {
   const projection = {};
 
-  for await (const event of em.replay({ aggregateId: "page-1" })) {
+  for await (const event of em.replay({ streamId: "page-1" })) {
     // Update the projection based on the event
     if (event.type === "page-visited") {
-      projection[event.aggregateId] = projection[event.aggregateId] || [];
-      projection[event.aggregateId].push(event.payload);
+      projection[event.streamId] = projection[event.streamId] || [];
+      projection[event.streamId].push(event.payload);
     }
   }
 

@@ -5,11 +5,11 @@ export class InMemorySnapshotRepository<Aggregate>
 {
   private snapshots: Record<string, Aggregate> = {};
 
-  async saveSnapshot(aggregateId: string, snapshot: Aggregate): Promise<void> {
-    this.snapshots[aggregateId] = snapshot;
+  async saveSnapshot(streamId: string, snapshot: Aggregate): Promise<void> {
+    this.snapshots[streamId] = snapshot;
   }
 
-  async getLatestSnapshot(aggregateId: string): Promise<Aggregate | null> {
-    return this.snapshots[aggregateId] || null;
+  async getLatestSnapshot(streamId: string): Promise<Aggregate | null> {
+    return this.snapshots[streamId] || null;
   }
 }
