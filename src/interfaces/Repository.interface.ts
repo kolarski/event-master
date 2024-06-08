@@ -1,5 +1,6 @@
 import type { BaseEventType } from "../events/base.event.js";
 import type { ReplayQuery } from "./ReplayQuery.js";
+import type { Stream } from "./Stream.interface.js";
 
 export interface Repository<Event extends BaseEventType> {
   validateEventsTable(): Promise<void>;
@@ -9,4 +10,5 @@ export interface Repository<Event extends BaseEventType> {
   replay(query: ReplayQuery<Event>): AsyncIterable<Event>;
   getAllEvents(): Promise<Array<Event>>;
   getLastProcessedEventId(projectionName: string): Promise<string | null>;
+  getAllStreams(): Promise<Stream[]>;
 }

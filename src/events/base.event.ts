@@ -15,6 +15,14 @@ export const baseEvent = z.object({
     .optional()
     .default(0)
     .describe("Unique auto-incrementing sequence number for each event"),
+  expected_stream_seq: z
+    .number()
+    .safe()
+    .finite()
+    .int()
+    .nonnegative()
+    .optional()
+    .describe("Expected sequence number of the stream"),
   type: z.string(),
   version: z.number().safe().finite().int().positive().default(1),
   createdAt: z.date().default(() => new Date()),

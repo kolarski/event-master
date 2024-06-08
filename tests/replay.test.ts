@@ -62,4 +62,56 @@ test("Events Replay", async () => {
 
   expect(replay.length).toBe(2);
   expect(replay.map((i) => i.seq)).toStrictEqual([1, 3]);
+
+  expect(await em.getAllStreams()).toStrictEqual([
+    {
+      id: "page-1",
+      seq: 1,
+      type: "page-visited",
+    },
+    {
+      id: "page-2",
+      seq: 0,
+      type: "page-visited",
+    },
+  ]);
+
+  expect(
+    em.emit({
+      type: "page-visited",
+      aggregateId: "page-1",
+      expected_stream_seq: 0,
+      payload: {
+        url: "https://example.com",
+        visited_date: new Date().toISOString(),
+        html: "<html>2</html>",
+        html_status: 200,
+      },
+    })
+  ).rejects.toThrow();
+
+  await em.emit({
+    type: "page-visited",
+    aggregateId: "page-1",
+    expected_stream_seq: 1,
+    payload: {
+      url: "https://example.com",
+      visited_date: new Date().toISOString(),
+      html: "<html>2</html>",
+      html_status: 200,
+    },
+  });
+
+  expect(await em.getAllStreams()).toStrictEqual([
+    {
+      id: "page-1",
+      seq: 2,
+      type: "page-visited",
+    },
+    {
+      id: "page-2",
+      seq: 0,
+      type: "page-visited",
+    },
+  ]);
 });

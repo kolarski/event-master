@@ -1,13 +1,8 @@
 import type { BaseEventType } from "../events/base.event";
 import type { ReplayQuery } from "../interfaces/ReplayQuery";
 import type { Repository } from "../interfaces/Repository.interface";
+import type { Stream } from "../interfaces/Stream.interface";
 import { Mutex } from "../utils/Mutex";
-
-interface Stream {
-  id: string;
-  type: string;
-  seq: number;
-}
 
 /**
  * An in-memory implementation of the Repository interface.
@@ -68,21 +63,44 @@ export class InMemoryRepository<Event extends BaseEventType>
     try {
       event.seq = ++this.currentSeq;
       this.events.push(event);
+      this.updateStream(event);
     } finally {
       unlock();
     }
   }
 
+  public async getAllStreams(): Promise<Stream[]> {
+    return this.streams;
+  }
+
+  private updateStream(event: Event): void {
+    if (event.aggregateId) {
+      const index = this.streams.findIndex((s) => s.id === event.aggregateId);
+      if (index === -1) {
+        this.streams.push({
+          id: event.aggregateId,
+          type: event.type,
+          seq: 0,
+        });
+      } else {
+        const stream = this.streams[index];
+        if (
+          typeof event.expected_stream_seq !== "undefined" &&
+          stream.seq !== event.expected_stream_seq
+        ) {
+          throw new Error(
+            `Cannot emit event with expected_stream_seq = ${event.expected_stream_seq}. Stream has seq = ${stream.seq}`
+          );
+        }
+        stream.seq += 1;
+      }
+    }
+  }
+
   // It should be transactional
   public async emitEvents(events: Array<Event>): Promise<void> {
-    const unlock = await this.seqMutex.lock();
-    try {
-      for (const event of events) {
-        event.seq = ++this.currentSeq;
-        this.events.push(event);
-      }
-    } finally {
-      unlock();
+    for (const event of events) {
+      this.emitEvent(event);
     }
   }
 

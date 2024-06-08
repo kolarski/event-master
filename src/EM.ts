@@ -125,4 +125,8 @@ export class EM<
       await this.logger.logProjectionItem(query, upgradedEvent);
     }
   }
+
+  public async getAllStreams() {
+    return await this.repo.getAllStreams();
+  }
 }
