@@ -35,7 +35,12 @@ npm install @kolarski/event-master
 
 ## Setup
 
-To use Event Master in your project, you need to import and configure the necessary components.
+To use Event Master in your project, you need to define your events first.
+This is done using the Zod library (https://zod.dev/).
+That way not only you are getting an a TypeScript type safty but also you are getting,
+runtime safety as well, thanks to Zod's parsers.
+Zod is already included in the project, no need to install it seperatly.
+You just need to extend the baseEvent already defined in the project with your custom payload
 
 ```typescript
 import { EM, baseEvent, z } from "@kolarski/event-master";
