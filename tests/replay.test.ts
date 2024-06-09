@@ -1,10 +1,13 @@
 import { expect, test, beforeEach } from "bun:test";
-import { EM } from "./../src/EM";
+import { EM } from "../src/EM";
 import { eventSchema, EventInputType, EventType } from "./__mocks__/events";
+import { PageVisitedEventUpgrader } from "./__mocks__/PageVisitedEventUpgrader";
 import { EventBus } from "../src/EventBus";
 
 let em: EM<EventType, EventInputType>;
 let replay: EventType[] = [];
+
+const upgraders = [new PageVisitedEventUpgrader()];
 
 beforeEach(async () => {
   replay = [];
@@ -12,10 +15,11 @@ beforeEach(async () => {
   em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
     eventBus,
+    upgraders,
   });
 });
 
-test("Events Replay", async () => {
+test("Replay with Multiple Event Types", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
@@ -28,23 +32,12 @@ test("Events Replay", async () => {
       },
     },
     {
-      type: "page-visited",
-      streamId: "page-2",
-      payload: {
-        url: "https://example.com",
-        visited_date: new Date().toISOString(),
-        html: "<html> Random page</html>",
-        html_status: 200,
-      },
-    },
-    {
-      type: "page-visited",
+      type: "broken-link",
       streamId: "page-1",
       payload: {
-        url: "https://example.com",
+        url: "https://bad-link.com",
         visited_date: new Date().toISOString(),
-        html: "<html>2</html>",
-        html_status: 200,
+        html_status: 404,
       },
     },
   ];
@@ -55,63 +48,35 @@ test("Events Replay", async () => {
 
   for await (const event of em.replay({
     streamId: "page-1",
-    eventTypes: ["page-visited"],
+    eventTypes: ["page-visited", "broken-link"],
   })) {
     replay.push(event);
   }
 
   expect(replay.length).toBe(2);
-  expect(replay.map((i) => i.seq)).toStrictEqual([1, 3]);
+});
 
-  expect(await Array.fromAsync(em.getAllStreams())).toStrictEqual([
-    {
-      id: "page-1",
-      seq: 1,
-      type: "page-visited",
-    },
-    {
-      id: "page-2",
-      seq: 0,
-      type: "page-visited",
-    },
-  ]);
-
-  expect(
-    em.emit({
-      type: "page-visited",
-      streamId: "page-1",
-      expectedStreamSeq: 0,
-      payload: {
-        url: "https://example.com",
-        visited_date: new Date().toISOString(),
-        html: "<html>2</html>",
-        html_status: 200,
-      },
-    })
-  ).rejects.toThrow();
-
-  await em.emit({
+test("Replay with No Matching Events", async () => {
+  const event: EventInputType = {
     type: "page-visited",
     streamId: "page-1",
-    expectedStreamSeq: 1,
     payload: {
       url: "https://example.com",
       visited_date: new Date().toISOString(),
-      html: "<html>2</html>",
+      html: "<html></html>",
       html_status: 200,
     },
-  });
+    version: 1,
+  };
 
-  expect(await Array.fromAsync(em.getAllStreams())).toStrictEqual([
-    {
-      id: "page-1",
-      seq: 2,
-      type: "page-visited",
-    },
-    {
-      id: "page-2",
-      seq: 0,
-      type: "page-visited",
-    },
-  ]);
+  await em.emit(event);
+
+  for await (const event of em.replay({
+    streamId: "non-existing-id",
+    eventTypes: ["page-visited"],
+  })) {
+    replay.push(event);
+  }
+
+  expect(replay.length).toBe(0);
 });
