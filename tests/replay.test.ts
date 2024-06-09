@@ -80,3 +80,267 @@ test("Replay with No Matching Events", async () => {
 
   expect(replay.length).toBe(0);
 });
+
+test("Replay with Sequence Range", async () => {
+  const events: EventInputType[] = [
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com",
+        visited_date: new Date().toISOString(),
+        html: "<html></html>",
+        html_status: 200,
+      },
+      seq: 1,
+    },
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com/page2",
+        visited_date: new Date().toISOString(),
+        html: "<html>2</html>",
+        html_status: 200,
+      },
+      seq: 2,
+    },
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com/page3",
+        visited_date: new Date().toISOString(),
+        html: "<html>3</html>",
+        html_status: 200,
+      },
+      seq: 3,
+    },
+  ];
+
+  for (const event of events) {
+    await em.emit(event);
+  }
+
+  for await (const event of em.replay({
+    streamId: "page-1",
+    seq: { from: 2, to: 3 },
+  })) {
+    replay.push(event);
+  }
+
+  expect(replay.length).toBe(2);
+  expect(replay.map((e) => e.seq)).toStrictEqual([2, 3]);
+});
+
+test("Replay with Specific Payload", async () => {
+  const events: EventInputType[] = [
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com",
+        visited_date: new Date().toISOString(),
+        html: "<html></html>",
+        html_status: 200,
+      },
+    },
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com/page2",
+        visited_date: new Date().toISOString(),
+        html: "<html>2</html>",
+        html_status: 200,
+      },
+    },
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com/page3",
+        visited_date: new Date().toISOString(),
+        html: "<html>3</html>",
+        html_status: 200,
+      },
+    },
+  ];
+
+  for (const event of events) {
+    await em.emit(event);
+  }
+
+  for await (const event of em.replay({
+    streamId: "page-1",
+    payload: { url: "https://example.com/page2" },
+  })) {
+    replay.push(event);
+  }
+
+  expect(replay.length).toBe(1);
+  expect(replay[0].payload.url).toBe("https://example.com/page2");
+});
+
+test("Replay with CreatedAt Range", async () => {
+  const now = new Date();
+  const events: EventInputType[] = [
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com",
+        visited_date: now.toISOString(),
+        html: "<html></html>",
+        html_status: 200,
+      },
+      createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
+    },
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com/page2",
+        visited_date: now.toISOString(),
+        html: "<html>2</html>",
+        html_status: 200,
+      },
+      createdAt: now,
+    },
+  ];
+
+  for (const event of events) {
+    await em.emit(event);
+  }
+
+  for await (const event of em.replay({
+    streamId: "page-1",
+    createdAt: { from: new Date(now.getTime() - 5000) }, // last 5 seconds
+  })) {
+    replay.push(event);
+  }
+
+  expect(replay.length).toBe(1);
+  expect(replay[0].payload.url).toBe("https://example.com/page2");
+});
+
+test("Replay with CreatedAt From and To Range", async () => {
+  const now = new Date();
+  const events: EventInputType[] = [
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com",
+        visited_date: now.toISOString(),
+        html: "<html></html>",
+        html_status: 200,
+      },
+      createdAt: new Date(now.getTime() - 20000), // 20 seconds ago
+    },
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com/page2",
+        visited_date: now.toISOString(),
+        html: "<html>2</html>",
+        html_status: 200,
+      },
+      createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
+    },
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com/page3",
+        visited_date: now.toISOString(),
+        html: "<html>3</html>",
+        html_status: 200,
+      },
+      createdAt: now,
+    },
+  ];
+
+  for (const event of events) {
+    await em.emit(event);
+  }
+
+  for await (const event of em.replay({
+    streamId: "page-1",
+    createdAt: {
+      from: new Date(now.getTime() - 15000),
+      to: new Date(now.getTime() - 5000),
+    }, // 15 seconds ago to 5 seconds ago
+  })) {
+    replay.push(event);
+  }
+
+  expect(replay.length).toBe(1);
+  expect(replay[0].payload.url).toBe("https://example.com/page2");
+});
+
+test("Replay with Multiple Filters", async () => {
+  const now = new Date();
+  const events: EventInputType[] = [
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com",
+        visited_date: now.toISOString(),
+        html: "<html></html>",
+        html_status: 200,
+      },
+      createdAt: new Date(now.getTime() - 20000), // 20 seconds ago
+    },
+    {
+      type: "broken-link",
+      streamId: "page-1",
+      payload: {
+        url: "https://bad-link.com",
+        visited_date: now.toISOString(),
+        html_status: 404,
+      },
+      createdAt: new Date(now.getTime() - 15000), // 15 seconds ago
+    },
+    {
+      type: "page-visited",
+      streamId: "page-1",
+      payload: {
+        url: "https://example.com/page2",
+        visited_date: now.toISOString(),
+        html: "<html>2</html>",
+        html_status: 200,
+      },
+      createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
+    },
+    {
+      type: "page-visited",
+      streamId: "page-2",
+      payload: {
+        url: "https://example.com/page3",
+        visited_date: now.toISOString(),
+        html: "<html>3</html>",
+        html_status: 200,
+      },
+      createdAt: now,
+    },
+  ];
+
+  for (const event of events) {
+    await em.emit(event);
+  }
+
+  for await (const event of em.replay({
+    streamId: "page-1",
+    eventTypes: ["page-visited"],
+    seq: { from: 2 },
+    createdAt: { from: new Date(now.getTime() - 15000) }, // last 15 seconds
+  })) {
+    replay.push(event);
+  }
+
+  expect(replay.length).toBe(1);
+  expect(replay[0].payload.url).toBe("https://example.com/page2");
+});
