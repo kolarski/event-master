@@ -133,7 +133,10 @@ export class EM<
     return this.repo.getAllEvents();
   }
 
-  public subscribe(handler: EventHandler<Event>): void {
+  public subscribe(
+    query: ReplayQuery<Event>,
+    handler: EventHandler<Event>
+  ): void {
     this.eventBus.subscribe(handler);
   }
 }

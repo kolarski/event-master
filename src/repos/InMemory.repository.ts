@@ -24,11 +24,10 @@ export class InMemoryRepository<Event extends BaseEventType>
     this.streams = [];
     return;
   }
-
-  async *replay(
+  private doesEventMatchQuery(
     query: ReplayQuery<Readonly<Event>>
-  ): AsyncIterable<Readonly<Event>> {
-    const filteredEvents = this.events.filter((event) => {
+  ): (event: Readonly<Event>) => boolean {
+    return (event: Readonly<Event>) => {
       if (query.streamId && event.streamId !== query.streamId) return false;
       if (query.seq?.from && event.seq < query.seq.from) return false;
       if (query.seq?.to && event.seq > query.seq.to) return false;
@@ -44,7 +43,12 @@ export class InMemoryRepository<Event extends BaseEventType>
       if (query.createdAt?.to && event.createdAt > query.createdAt.to)
         return false;
       return true;
-    });
+    };
+  }
+  async *replay(
+    query: ReplayQuery<Readonly<Event>>
+  ): AsyncIterable<Readonly<Event>> {
+    const filteredEvents = this.events.filter(this.doesEventMatchQuery(query));
 
     const sortedEvents = filteredEvents.sort(
       (a, b) =>
