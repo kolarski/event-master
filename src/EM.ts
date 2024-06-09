@@ -105,7 +105,7 @@ export class EM<
       // console.error("Failed to emit event:", error);
       // throw error; // Re-throw to ensure calling code can handle it
       if (error instanceof ZodError) {
-        console.error("Failed to emit event:", error.message); // Log only the error message
+        this.logger.error("Failed to emit event:" + error.message); // Log only the error message
       }
       throw new Error(`Event emission failed: ${error}`);
     }
