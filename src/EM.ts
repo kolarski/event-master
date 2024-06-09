@@ -8,6 +8,7 @@ import { EventBus } from "./EventBus.js";
 import type { ReplayQuery } from "./interfaces/ReplayQuery.js";
 import { InMemoryRepository } from "./repos/InMemory.repository.js";
 import type { Stream } from "./interfaces/Stream.interface.js";
+import type { EventHandler } from "./interfaces/EventHandler.type.js";
 
 /**
  * The EM class represents the Event Master.
@@ -30,20 +31,17 @@ export class EM<
     events,
     repository = new InMemoryRepository<Event>(),
     upgraders = [],
-    eventBus = new EventBus<Event>(),
     logger = new VoidLogger(),
   }: {
     events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
     repository?: Repository<Event>;
     upgraders?: Array<EventUpgrader<Event>>;
-    eventBus?: EventBus<Event>;
     logger?: Logger<Event>;
   }): Promise<EM<Event, InputEvent>> {
     const em = new EM<Event, InputEvent>({
       events,
       repository,
       upgraders,
-      eventBus,
       logger,
     });
     await em.init();
@@ -54,19 +52,17 @@ export class EM<
     events,
     repository = new InMemoryRepository<Event>(),
     upgraders = [],
-    eventBus = new EventBus<Event>(),
     logger = new VoidLogger(),
   }: {
     events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
     repository?: Repository<Event>;
     upgraders?: Array<EventUpgrader<Event>>;
-    eventBus?: EventBus<Event>;
     logger?: Logger<Event>;
   }) {
     this.events = events;
     this.repo = repository;
     this.upgraders = upgraders;
-    this.eventBus = eventBus;
+    this.eventBus = new EventBus<Event>();
     this.logger = logger;
   }
 
@@ -135,5 +131,9 @@ export class EM<
 
   public getAllEvents(): AsyncIterable<Readonly<Event>> {
     return this.repo.getAllEvents();
+  }
+
+  public subscribe(handler: EventHandler<Event>): void {
+    this.eventBus.subscribe(handler);
   }
 }
