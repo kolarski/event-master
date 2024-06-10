@@ -93,19 +93,13 @@ test("Persistant subscription", async () => {
   };
 
   await em.emit(event);
-  em.subscribe(
-    {},
-    async (event) => {
-      if (event.type === "page-visited") {
-        capturedLogs.push(
-          `Page visited: ${event.payload.url} at date: ${event.payload.visited_date}`
-        );
-      }
-    },
-    {
-      persistant: true,
+  em.subscribe({}, async (event) => {
+    if (event.type === "page-visited") {
+      capturedLogs.push(
+        `Page visited: ${event.payload.url} at date: ${event.payload.visited_date}`
+      );
     }
-  );
+  });
   const event2: EventInputType = {
     type: "page-visited",
     streamId: "page-1",
