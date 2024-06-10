@@ -46,11 +46,5 @@ const eventSchema = z.union([
 type EventInputType = z.input<typeof eventSchema>;
 type EventType = z.output<typeof eventSchema>;
 
-export {
-  eventSchema,
-  EventInputType,
-  EventType,
-  PageVisitedEvent,
-  PageVisitedV2Event,
-  BrokenLinkEvent,
-};
+export { eventSchema, PageVisitedEvent, PageVisitedV2Event, BrokenLinkEvent };
+export type { EventInputType, EventType };

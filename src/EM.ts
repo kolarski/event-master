@@ -9,6 +9,7 @@ import type { ReplayQuery } from "./interfaces/ReplayQuery.js";
 import { InMemoryRepository } from "./repos/InMemory.repository.js";
 import type { Stream } from "./interfaces/Stream.interface.js";
 import type { EventHandler } from "./interfaces/EventHandler.type.js";
+import type { SubscriptionQuery } from "./interfaces/SubscriptionQuery.js";
 
 /**
  * The EM class represents the Event Master.
@@ -134,9 +135,9 @@ export class EM<
   }
 
   public subscribe(
-    query: ReplayQuery<Event>,
+    query: SubscriptionQuery<Event>,
     handler: EventHandler<Event>
   ): void {
-    this.eventBus.subscribe(handler);
+    this.eventBus.subscribe(query, handler);
   }
 }

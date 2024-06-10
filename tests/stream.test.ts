@@ -1,15 +1,16 @@
 import { expect, test, beforeEach } from "bun:test";
 import { EM } from "../src/EM";
-import { eventSchema, EventInputType, EventType } from "./__mocks__/events";
-import { EventBus } from "../src/EventBus";
+import {
+  eventSchema,
+  type EventInputType,
+  type EventType,
+} from "./__mocks__/events";
 
 let em: EM<EventType, EventInputType>;
 
 beforeEach(async () => {
-  const eventBus = new EventBus<EventType>();
   em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
-    eventBus,
   });
 });
 

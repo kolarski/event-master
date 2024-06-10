@@ -94,6 +94,9 @@ export class InMemoryRepository<Event extends BaseEventType>
         });
       } else {
         const stream = this.streams[index];
+        if (!stream) {
+          throw new Error("Stream not found");
+        }
         if (
           typeof event.expectedStreamSeq !== "undefined" &&
           stream.seq !== event.expectedStreamSeq

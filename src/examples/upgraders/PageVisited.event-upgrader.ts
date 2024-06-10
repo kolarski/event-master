@@ -21,7 +21,7 @@ export class PageVisitedEventUpgrader implements EventUpgrader<EventType> {
 
   downgrade(event: EventType): EventType {
     if (event.type === "page-visited" && event.version === 2) {
-      const { userAgent, ...restPayload } = event.payload;
+      const { userAgent: _userAgent, ...restPayload } = event.payload;
       return PageVisitedEvent.parse({
         ...event,
         version: 1,

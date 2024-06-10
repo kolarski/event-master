@@ -1,8 +1,11 @@
 import { expect, test, beforeEach } from "bun:test";
 import { EM } from "../src/EM";
-import { eventSchema, EventInputType, EventType } from "./__mocks__/events";
+import {
+  eventSchema,
+  type EventInputType,
+  type EventType,
+} from "./__mocks__/events";
 import { PageVisitedEventUpgrader } from "./__mocks__/PageVisitedEventUpgrader";
-import { EventBus } from "../src/EventBus";
 
 let em: EM<EventType, EventInputType>;
 let replay: EventType[] = [];
@@ -11,10 +14,8 @@ const upgraders = [new PageVisitedEventUpgrader()];
 
 beforeEach(async () => {
   replay = [];
-  const eventBus = new EventBus<EventType>();
   em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
-    eventBus,
     upgraders,
   });
 });
@@ -179,7 +180,7 @@ test("Replay with Specific Payload", async () => {
   }
 
   expect(replay.length).toBe(1);
-  expect(replay[0].payload.url).toBe("https://example.com/page2");
+  expect(replay[0]?.payload.url).toBe("https://example.com/page2");
 });
 
 test("Replay with CreatedAt Range", async () => {
@@ -221,7 +222,7 @@ test("Replay with CreatedAt Range", async () => {
   }
 
   expect(replay.length).toBe(1);
-  expect(replay[0].payload.url).toBe("https://example.com/page2");
+  expect(replay[0]?.payload.url).toBe("https://example.com/page2");
 });
 
 test("Replay with CreatedAt From and To Range", async () => {
@@ -277,7 +278,7 @@ test("Replay with CreatedAt From and To Range", async () => {
   }
 
   expect(replay.length).toBe(1);
-  expect(replay[0].payload.url).toBe("https://example.com/page2");
+  expect(replay[0]?.payload.url).toBe("https://example.com/page2");
 });
 
 test("Replay with Multiple Filters", async () => {
@@ -342,5 +343,5 @@ test("Replay with Multiple Filters", async () => {
   }
 
   expect(replay.length).toBe(1);
-  expect(replay[0].payload.url).toBe("https://example.com/page2");
+  expect(replay[0]?.payload.url).toBe("https://example.com/page2");
 });

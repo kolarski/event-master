@@ -1,5 +1,6 @@
 import type { BaseEventType } from "./events/base.event.js";
 import type { EventHandler } from "./interfaces/EventHandler.type.js";
+import type { SubscriptionQuery } from "./interfaces/SubscriptionQuery.js";
 
 export class EventBus<Event extends BaseEventType> {
   private handlers: EventHandler<Event>[] = [];
@@ -8,7 +9,10 @@ export class EventBus<Event extends BaseEventType> {
    * Subscribe a new event handler.
    * @param handler - The handler to subscribe.
    */
-  subscribe(handler: EventHandler<Event>): void {
+  subscribe(
+    _query: SubscriptionQuery<Event>,
+    handler: EventHandler<Event>
+  ): void {
     this.handlers.push(handler);
   }
 

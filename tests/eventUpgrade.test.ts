@@ -1,20 +1,21 @@
 import { expect, test, beforeEach } from "bun:test";
 import { EM } from "./../src/EM";
-import { eventSchema, EventInputType, EventType } from "./__mocks__/events";
+import {
+  eventSchema,
+  type EventInputType,
+  type EventType,
+} from "./__mocks__/events";
 import { PageVisitedEventUpgrader } from "./__mocks__/PageVisitedEventUpgrader";
-import { EventBus } from "../src/EventBus";
 
 let em: EM<EventType, EventInputType>;
 let replay: EventType[] = [];
 
-const eventBus = new EventBus<EventType>();
 const upgraders = [new PageVisitedEventUpgrader()];
 
 beforeEach(async () => {
   replay = [];
   em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
-    eventBus,
     upgraders,
   });
 });
@@ -42,6 +43,6 @@ test("Event Upgrading", async () => {
   }
 
   expect(replay.length).toBe(1);
-  expect(replay[0].version).toBe(2);
+  expect(replay[0]?.version).toBe(2);
   expect((replay[0] as any).payload.userAgent).toBe("unknown");
 });

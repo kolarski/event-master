@@ -1,6 +1,10 @@
 import { expect, test, beforeEach } from "bun:test";
 import { EM } from "./../src/EM";
-import { eventSchema, EventInputType, EventType } from "./__mocks__/events";
+import {
+  eventSchema,
+  type EventInputType,
+  type EventType,
+} from "./__mocks__/events";
 
 let em: EM<EventType, EventInputType>;
 let capturedLogs: string[] = [];

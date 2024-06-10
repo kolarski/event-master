@@ -1,15 +1,16 @@
 import { expect, test, beforeEach } from "bun:test";
 import { EM } from "../src/EM";
-import { eventSchema, EventInputType, EventType } from "./__mocks__/events";
-import { EventBus } from "../src/EventBus";
+import {
+  eventSchema,
+  type EventInputType,
+  type EventType,
+} from "./__mocks__/events";
 
 let em: EM<EventType, EventInputType>;
 
 beforeEach(async () => {
-  const eventBus = new EventBus<EventType>();
   em = await EM.create<EventType, EventInputType>({
     events: eventSchema,
-    eventBus,
   });
 });
 
@@ -82,4 +83,13 @@ test("Emit Invalid Event - 2", async () => {
   };
 
   expect(em.emit(invalidEvent as any)).rejects.toThrow();
+});
+
+// Fake test for `subscribeToStream`
+test.skip("Fake Test", async () => {
+  // @ts-expect-error: Method does not exist yet
+  await em.nonExistingMethod("example-name");
+
+  // Assuming there will be some assertions here
+  expect(true).toBe(true);
 });
