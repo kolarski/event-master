@@ -51,7 +51,7 @@ const pageVisitedEvent = baseEvent
     type: z.literal("page-visited"),
     payload: z.object({
       url: z.string().url(),
-      visited_date: z.string().datetime(),
+      visitedDate: z.string().datetime(),
     }),
   })
   .readonly();
@@ -61,7 +61,7 @@ const pageMissingEvent = baseEvent
     type: z.literal("page-missing"),
     payload: z.object({
       url: z.string().url(),
-      visited_date: z.string().datetime(),
+      visitedDate: z.string().datetime(),
     }),
   })
   .readonly();
@@ -88,7 +88,7 @@ const pageVisitedEvent = baseEvent
     type: z.literal("page-visited"),
     payload: z.object({
       url: z.string().url(),
-      visited_date: z.string().datetime(),
+      visitedDate: z.string().datetime(),
     }),
   })
   .readonly();
@@ -106,7 +106,7 @@ const event = {
   streamId: "page-1",
   payload: {
     url: "https://example.com",
-    visited_date: new Date().toISOString(),
+    visitedDate: new Date().toISOString(),
   },
 };
 
@@ -227,7 +227,7 @@ const PageVisitedEvent = z.object({
   streamId: z.string(),
   payload: z.object({
     url: z.string().url(),
-    visited_date: z.string().datetime(),
+    visitedDate: z.string().datetime(),
   }),
 });
 
@@ -237,7 +237,7 @@ const PageVisitedV2Event = z.object({
   streamId: z.string(),
   payload: z.object({
     url: z.string().url(),
-    visited_date: z.string().datetime(),
+    visitedDate: z.string().datetime(),
     userAgent: z.string().default("unknown"),
   }),
 });
@@ -295,7 +295,7 @@ const pageVisitedEvent = baseEvent
     type: z.literal("page-visited"),
     payload: z.object({
       url: z.string().url(),
-      visited_date: z.string().datetime(),
+      visitedDate: z.string().datetime(),
     }),
   })
   .readonly();

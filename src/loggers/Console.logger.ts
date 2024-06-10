@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { BaseEventType } from "../events/base.event";
 import type { Logger } from "../interfaces/Logger.interface";
 import type { ProjectionQuery } from "../interfaces/ProjectionQuery";

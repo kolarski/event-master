@@ -1,4 +1,4 @@
-import { ZodError, ZodUnion, type ZodTypeAny } from "zod";
+import { ZodError, type ZodTypeAny, ZodUnion } from "zod";
 import type { Repository } from "./interfaces/Repository.interface.js";
 import type { BaseEventType, BaseInputEventType } from "./events/base.event.js";
 import type { Logger } from "./interfaces/Logger.interface.js";
@@ -26,20 +26,20 @@ export class EM<
   private isInitialized: boolean = false;
 
   public static async create<
-    Event extends BaseEventType,
-    InputEvent extends BaseInputEventType
+    EventCreate extends BaseEventType,
+    InputEventCreate extends BaseInputEventType
   >({
     events,
-    repository = new InMemoryRepository<Event>(),
+    repository = new InMemoryRepository<EventCreate>(),
     upgraders = [],
     logger = new VoidLogger(),
   }: {
     events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
-    repository?: Repository<Event>;
-    upgraders?: Array<EventUpgrader<Event>>;
-    logger?: Logger<Event>;
-  }): Promise<EM<Event, InputEvent>> {
-    const em = new EM<Event, InputEvent>({
+    repository?: Repository<EventCreate>;
+    upgraders?: Array<EventUpgrader<EventCreate>>;
+    logger?: Logger<EventCreate>;
+  }): Promise<EM<EventCreate, InputEventCreate>> {
+    const em = new EM<EventCreate, InputEventCreate>({
       events,
       repository,
       upgraders,
@@ -63,8 +63,8 @@ export class EM<
     this.events = events;
     this.repo = repository;
     this.upgraders = upgraders;
-    this.eventBus = new EventBus<Event>();
     this.logger = logger;
+    this.eventBus = new EventBus<Event>(this.logger);
   }
 
   public async init(): Promise<void> {
@@ -90,20 +90,20 @@ export class EM<
       throw new Error("EM is not initialized. Please call EM.init() first.");
     }
     try {
-      const parsedEvent = this.events.parse(event) as Event;
-      const upgradedEvent = this.applyUpgrades(parsedEvent);
+      const parsedEvent = this.events.parse(event) as Event,
+        upgradedEvent = this.applyUpgrades(parsedEvent);
       await this.repo.emitEvent(upgradedEvent);
       await Promise.all([
         this.eventBus.publish(parsedEvent),
         this.logger.logEvent(upgradedEvent),
       ]);
     } catch (error) {
-      // Handle errors appropriately
-      // console.error("Failed to emit event:", error);
-      // throw error; // Re-throw to ensure calling code can handle it
-      if (error instanceof ZodError) {
-        this.logger.error("Failed to emit event:" + error.message); // Log only the error message
-      }
+      this.logger.error(
+        `Failed to emit event: ${
+          error instanceof ZodError ? error.message : error
+        }`
+      );
+
       throw new Error(`Event emission failed: ${error}`);
     }
   }

@@ -27,9 +27,9 @@ test("Replay with Multiple Event Types", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -37,8 +37,8 @@ test("Replay with Multiple Event Types", async () => {
       streamId: "page-1",
       payload: {
         url: "https://bad-link.com",
-        visited_date: new Date().toISOString(),
-        html_status: 404,
+        visitedDate: new Date().toISOString(),
+        htmlStatus: 404,
       },
     },
   ];

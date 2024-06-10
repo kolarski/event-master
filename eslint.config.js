@@ -19,7 +19,7 @@ export default [
       js: pluginJs,
     },
     rules: {
-      ...pluginJs.configs.recommended.rules,
+      ...pluginJs.configs.all.rules,
       ...tseslint.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -33,6 +33,14 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
+      "sort-keys": "off",
+      "require-await": "off",
+      "sort-imports": "off",
+      "no-magic-numbers": "off",
+      "id-length": "off",
+      "no-empty-function": "off",
+      "class-methods-use-this": "off",
+      "no-ternary": "off",
     },
   },
   {

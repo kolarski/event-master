@@ -21,9 +21,9 @@ test("Emit Events and Validate Emission", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -31,9 +31,9 @@ test("Emit Events and Validate Emission", async () => {
       streamId: "page-2",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html> Random page</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -41,9 +41,9 @@ test("Emit Events and Validate Emission", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
   ];
@@ -61,9 +61,9 @@ test("Emit Invalid Event", async () => {
     streamId: "page-1",
     payload: {
       url: "invalid-url",
-      visited_date: "not-a-date",
+      visitedDate: "not-a-date",
       html: "<html></html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   };
 
@@ -76,9 +76,9 @@ test("Emit Invalid Event - 2", async () => {
     streamId: 42,
     payload: {
       url: "invalid-url",
-      visited_date: "not-a-date",
+      visitedDate: "not-a-date",
       html: "<html></html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   };
 

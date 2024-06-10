@@ -27,9 +27,9 @@ test("Replay with Multiple Event Types", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -37,8 +37,8 @@ test("Replay with Multiple Event Types", async () => {
       streamId: "page-1",
       payload: {
         url: "https://bad-link.com",
-        visited_date: new Date().toISOString(),
-        html_status: 404,
+        visitedDate: new Date().toISOString(),
+        htmlStatus: 404,
       },
     },
   ];
@@ -63,9 +63,9 @@ test("Replay with No Matching Events", async () => {
     streamId: "page-1",
     payload: {
       url: "https://example.com",
-      visited_date: new Date().toISOString(),
+      visitedDate: new Date().toISOString(),
       html: "<html></html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
     version: 1,
   };
@@ -89,9 +89,9 @@ test("Replay with Sequence Range", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       seq: 1,
     },
@@ -100,9 +100,9 @@ test("Replay with Sequence Range", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page2",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       seq: 2,
     },
@@ -111,9 +111,9 @@ test("Replay with Sequence Range", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page3",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>3</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       seq: 3,
     },
@@ -141,9 +141,9 @@ test("Replay with Specific Payload", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -151,9 +151,9 @@ test("Replay with Specific Payload", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page2",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -161,9 +161,9 @@ test("Replay with Specific Payload", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page3",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>3</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
   ];
@@ -191,9 +191,9 @@ test("Replay with CreatedAt Range", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: now.toISOString(),
+        visitedDate: now.toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
     },
@@ -202,9 +202,9 @@ test("Replay with CreatedAt Range", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page2",
-        visited_date: now.toISOString(),
+        visitedDate: now.toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       createdAt: now,
     },
@@ -233,9 +233,9 @@ test("Replay with CreatedAt From and To Range", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: now.toISOString(),
+        visitedDate: now.toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       createdAt: new Date(now.getTime() - 20000), // 20 seconds ago
     },
@@ -244,9 +244,9 @@ test("Replay with CreatedAt From and To Range", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page2",
-        visited_date: now.toISOString(),
+        visitedDate: now.toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
     },
@@ -255,9 +255,9 @@ test("Replay with CreatedAt From and To Range", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page3",
-        visited_date: now.toISOString(),
+        visitedDate: now.toISOString(),
         html: "<html>3</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       createdAt: now,
     },
@@ -289,9 +289,9 @@ test("Replay with Multiple Filters", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: now.toISOString(),
+        visitedDate: now.toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       createdAt: new Date(now.getTime() - 20000), // 20 seconds ago
     },
@@ -300,8 +300,8 @@ test("Replay with Multiple Filters", async () => {
       streamId: "page-1",
       payload: {
         url: "https://bad-link.com",
-        visited_date: now.toISOString(),
-        html_status: 404,
+        visitedDate: now.toISOString(),
+        htmlStatus: 404,
       },
       createdAt: new Date(now.getTime() - 15000), // 15 seconds ago
     },
@@ -310,9 +310,9 @@ test("Replay with Multiple Filters", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page2",
-        visited_date: now.toISOString(),
+        visitedDate: now.toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
     },
@@ -321,9 +321,9 @@ test("Replay with Multiple Filters", async () => {
       streamId: "page-2",
       payload: {
         url: "https://example.com/page3",
-        visited_date: now.toISOString(),
+        visitedDate: now.toISOString(),
         html: "<html>3</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
       createdAt: now,
     },

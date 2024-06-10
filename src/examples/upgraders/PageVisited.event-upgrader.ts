@@ -12,7 +12,8 @@ export class PageVisitedEventUpgrader implements EventUpgrader<EventType> {
         version: 2,
         payload: {
           ...event.payload,
-          userAgent: "unknown", // Default value for new field
+          // Default value for new field
+          userAgent: "unknown",
         },
       });
     }

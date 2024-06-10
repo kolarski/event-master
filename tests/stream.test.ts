@@ -21,9 +21,9 @@ test("Emit Events and Check Streams", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -31,9 +31,9 @@ test("Emit Events and Check Streams", async () => {
       streamId: "page-2",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html> Random page</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -41,9 +41,9 @@ test("Emit Events and Check Streams", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
   ];
@@ -72,9 +72,9 @@ test("Emit Events and Check Streams", async () => {
       expectedStreamSeq: 0,
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     })
   ).rejects.toThrow();
@@ -85,9 +85,9 @@ test("Emit Events and Check Streams", async () => {
     expectedStreamSeq: 1,
     payload: {
       url: "https://example.com",
-      visited_date: new Date().toISOString(),
+      visitedDate: new Date().toISOString(),
       html: "<html>2</html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   });
 
@@ -112,9 +112,9 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
       streamId: "page-2",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html></html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -122,9 +122,9 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>2</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
     {
@@ -132,9 +132,9 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
       streamId: "page-1",
       payload: {
         url: "https://example.com/page1",
-        visited_date: new Date().toISOString(),
+        visitedDate: new Date().toISOString(),
         html: "<html>1</html>",
-        html_status: 200,
+        htmlStatus: 200,
       },
     },
   ];
@@ -162,9 +162,9 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
     expectedStreamSeq: 0,
     payload: {
       url: "https://example.com/page2",
-      visited_date: new Date().toISOString(),
+      visitedDate: new Date().toISOString(),
       html: "<html>2</html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   });
 

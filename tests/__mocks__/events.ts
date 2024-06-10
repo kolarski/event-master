@@ -7,9 +7,9 @@ const PageVisitedEvent = baseEvent.extend({
   streamId: z.string(),
   payload: z.object({
     url: z.string().url(),
-    visited_date: z.string().datetime(),
+    visitedDate: z.string().datetime(),
     html: z.string().min(1),
-    html_status: z.number().int().min(100).max(599),
+    htmlStatus: z.number().int().min(100).max(599),
   }),
 });
 
@@ -19,9 +19,9 @@ const PageVisitedV2Event = baseEvent.extend({
   streamId: z.string(),
   payload: z.object({
     url: z.string().url(),
-    visited_date: z.string().datetime(),
+    visitedDate: z.string().datetime(),
     html: z.string(),
-    html_status: z.number().int().min(100).max(599),
+    htmlStatus: z.number().int().min(100).max(599),
     userAgent: z.string(),
   }),
 });
@@ -32,8 +32,8 @@ const BrokenLinkEvent = baseEvent.extend({
   streamId: z.string(),
   payload: z.object({
     url: z.string().url(),
-    visited_date: z.string().datetime(),
-    html_status: z.number().int().min(100).max(599),
+    visitedDate: z.string().datetime(),
+    htmlStatus: z.number().int().min(100).max(599),
   }),
 });
 

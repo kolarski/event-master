@@ -17,43 +17,77 @@ export class InMemoryRepository<Event extends BaseEventType>
 
   async validateEventsTable(): Promise<void> {
     this.events = [];
-    return;
   }
 
   async validateStreamsTable(): Promise<void> {
     this.streams = [];
-    return;
   }
   private doesEventMatchQuery(
     query: ReplayQuery<Readonly<Event>>
   ): (event: Readonly<Event>) => boolean {
-    return (event: Readonly<Event>) => {
-      if (query.streamId && event.streamId !== query.streamId) return false;
-      if (query.seq?.from && event.seq < query.seq.from) return false;
-      if (query.seq?.to && event.seq > query.seq.to) return false;
-      if (query.eventTypes && !query.eventTypes.includes(event.type))
-        return false;
-      if (query.payload) {
-        for (const key in query.payload) {
-          if (query.payload[key] !== event.payload[key]) return false;
-        }
-      }
-      if (query.createdAt?.from && event.createdAt < query.createdAt.from)
-        return false;
-      if (query.createdAt?.to && event.createdAt > query.createdAt.to)
-        return false;
-      return true;
-    };
+    return (event: Readonly<Event>): boolean =>
+      this.matchStreamId(event, query) &&
+      this.matchSeqFrom(event, query) &&
+      this.matchSeqTo(event, query) &&
+      this.matchEventTypes(event, query) &&
+      this.matchPayload(event, query) &&
+      this.matchCreatedAtFrom(event, query) &&
+      this.matchCreatedAtTo(event, query);
   }
+  private matchStreamId = (
+    event: Readonly<Event>,
+    query: ReplayQuery<Readonly<Event>>
+  ): boolean => !query.streamId || event.streamId === query.streamId;
+
+  private matchSeqFrom = (
+    event: Readonly<Event>,
+    query: ReplayQuery<Readonly<Event>>
+  ): boolean => !query.seq?.from || event.seq >= query.seq.from;
+
+  private matchSeqTo = (
+    event: Readonly<Event>,
+    query: ReplayQuery<Readonly<Event>>
+  ): boolean => !query.seq?.to || event.seq <= query.seq.to;
+
+  private matchEventTypes = (
+    event: Readonly<Event>,
+    query: ReplayQuery<Readonly<Event>>
+  ): boolean => !query.eventTypes || query.eventTypes.includes(event.type);
+
+  private matchPayload = (
+    event: Readonly<Event>,
+    query: ReplayQuery<Readonly<Event>>
+  ): boolean => {
+    if (!query.payload) {
+      return true;
+    }
+    for (const key in query.payload) {
+      if (query.payload[key] !== event.payload[key]) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  private matchCreatedAtFrom = (
+    event: Readonly<Event>,
+    query: ReplayQuery<Readonly<Event>>
+  ): boolean =>
+    !query.createdAt?.from || event.createdAt >= query.createdAt.from;
+
+  private matchCreatedAtTo = (
+    event: Readonly<Event>,
+    query: ReplayQuery<Readonly<Event>>
+  ): boolean => !query.createdAt?.to || event.createdAt <= query.createdAt.to;
+
   async *replay(
     query: ReplayQuery<Readonly<Event>>
   ): AsyncIterable<Readonly<Event>> {
-    const filteredEvents = this.events.filter(this.doesEventMatchQuery(query));
-
-    const sortedEvents = filteredEvents.sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
+    const filteredEvents = this.events.filter(this.doesEventMatchQuery(query)),
+      sortedEvents = filteredEvents.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
 
     for (const event of sortedEvents) {
       yield event;
@@ -63,7 +97,8 @@ export class InMemoryRepository<Event extends BaseEventType>
   public async emitEvent(event: Event): Promise<void> {
     const unlock = await this.seqMutex.lock();
     try {
-      event.seq = ++this.currentSeq;
+      this.currentSeq += 1;
+      event.seq = this.currentSeq;
       this.events.push(event);
       this.updateStream(event);
     } finally {

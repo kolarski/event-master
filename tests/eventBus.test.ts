@@ -22,7 +22,7 @@ test("Basic Event Bus", async () => {
   em.subscribe({}, async (event) => {
     if (event.type === "page-visited") {
       capturedLogs.push(
-        `Page visited: ${event.payload.url} at date: ${event.payload.visited_date}`
+        `Page visited: ${event.payload.url} at date: ${event.payload.visitedDate}`
       );
     }
   });
@@ -31,16 +31,16 @@ test("Basic Event Bus", async () => {
     streamId: "page-1",
     payload: {
       url: "https://example.com",
-      visited_date: constant_date,
+      visitedDate: constant_date,
       html: "<html></html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   };
 
   await em.emit(event);
   expect(capturedLogs.length).toBe(1);
   expect(capturedLogs[0]).toBe(
-    `Page visited: https://example.com at date: ${event.payload.visited_date}`
+    `Page visited: https://example.com at date: ${event.payload.visitedDate}`
   );
 });
 
@@ -51,9 +51,9 @@ test("Emit only after subscription", async () => {
     streamId: "page-1",
     payload: {
       url: "https://example.com",
-      visited_date: constant_date,
+      visitedDate: constant_date,
       html: "<html></html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   };
 
@@ -61,7 +61,7 @@ test("Emit only after subscription", async () => {
   em.subscribe({}, async (event) => {
     if (event.type === "page-visited") {
       capturedLogs.push(
-        `Page visited: ${event.payload.url} at date: ${event.payload.visited_date}`
+        `Page visited: ${event.payload.url} at date: ${event.payload.visitedDate}`
       );
     }
   });
@@ -70,16 +70,16 @@ test("Emit only after subscription", async () => {
     streamId: "page-1",
     payload: {
       url: "https://example.com",
-      visited_date: constant_date,
+      visitedDate: constant_date,
       html: "<html></html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   };
 
   await em.emit(event2);
   expect(capturedLogs.length).toBe(1);
   expect(capturedLogs[0]).toBe(
-    `Page visited: https://example.com at date: ${event.payload.visited_date}`
+    `Page visited: https://example.com at date: ${event.payload.visitedDate}`
   );
 });
 
@@ -90,9 +90,9 @@ test("Persistant subscription", async () => {
     streamId: "page-1",
     payload: {
       url: "https://example.com",
-      visited_date: constant_date,
+      visitedDate: constant_date,
       html: "<html></html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   };
 
@@ -100,7 +100,7 @@ test("Persistant subscription", async () => {
   em.subscribe({}, async (event) => {
     if (event.type === "page-visited") {
       capturedLogs.push(
-        `Page visited: ${event.payload.url} at date: ${event.payload.visited_date}`
+        `Page visited: ${event.payload.url} at date: ${event.payload.visitedDate}`
       );
     }
   });
@@ -109,15 +109,15 @@ test("Persistant subscription", async () => {
     streamId: "page-1",
     payload: {
       url: "https://example.com",
-      visited_date: constant_date,
+      visitedDate: constant_date,
       html: "<html></html>",
-      html_status: 200,
+      htmlStatus: 200,
     },
   };
 
   await em.emit(event2);
   expect(capturedLogs.length).toBe(1);
   expect(capturedLogs[0]).toBe(
-    `Page visited: https://example.com at date: ${event.payload.visited_date}`
+    `Page visited: https://example.com at date: ${event.payload.visitedDate}`
   );
 });

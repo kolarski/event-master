@@ -8,9 +8,9 @@ export default baseEvent.extend({
   payload: z
     .object({
       url: z.string().url(),
-      visited_date: z.string().datetime(),
+      visitedDate: z.string().datetime(),
       html: z.string(),
-      html_status: z.number().int().min(100).max(599),
+      htmlStatus: z.number().int().min(100).max(599),
       userAgent: z.string(),
     })
     .readonly(),
