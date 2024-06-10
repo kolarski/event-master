@@ -12,7 +12,7 @@ export class InMemoryRepository<Event extends BaseEventType>
 {
   private events: Array<Readonly<Event>> = [];
   private streams: Array<Stream> = [];
-  private currentSeq: number = 0;
+  private currentSeq = 0;
   private seqMutex = new Mutex();
 
   async validateEventsTable(): Promise<void> {

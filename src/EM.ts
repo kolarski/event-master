@@ -18,12 +18,12 @@ export class EM<
   Event extends BaseEventType,
   InputEvent extends BaseInputEventType
 > {
-  private events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
+  private events: ZodUnion<[ZodTypeAny, ...Array<ZodTypeAny>]>;
   private repo: Repository<Event>;
-  private upgraders: EventUpgrader<Event>[];
+  private upgraders: Array<EventUpgrader<Event>>;
   private eventBus: EventBus<Event>;
   private logger: Logger<Event>;
-  private isInitialized: boolean = false;
+  private isInitialized = false;
 
   public static async create<
     EventCreate extends BaseEventType,
@@ -34,7 +34,7 @@ export class EM<
     upgraders = [],
     logger = new VoidLogger(),
   }: {
-    events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
+    events: ZodUnion<[ZodTypeAny, ...Array<ZodTypeAny>]>;
     repository?: Repository<EventCreate>;
     upgraders?: Array<EventUpgrader<EventCreate>>;
     logger?: Logger<EventCreate>;
@@ -55,7 +55,7 @@ export class EM<
     upgraders = [],
     logger = new VoidLogger(),
   }: {
-    events: ZodUnion<[ZodTypeAny, ...ZodTypeAny[]]>;
+    events: ZodUnion<[ZodTypeAny, ...Array<ZodTypeAny>]>;
     repository?: Repository<Event>;
     upgraders?: Array<EventUpgrader<Event>>;
     logger?: Logger<Event>;
@@ -90,8 +90,8 @@ export class EM<
       throw new Error("EM is not initialized. Please call EM.init() first.");
     }
     try {
-      const parsedEvent = this.events.parse(event) as Event,
-        upgradedEvent = this.applyUpgrades(parsedEvent);
+      const parsedEvent = this.events.parse(event) as Event;
+      const upgradedEvent = this.applyUpgrades(parsedEvent);
       await this.repo.emitEvent(upgradedEvent);
       await Promise.all([
         this.eventBus.publish(parsedEvent),

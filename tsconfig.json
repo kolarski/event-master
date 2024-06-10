@@ -12,9 +12,9 @@
     "strict": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noPropertyAccessFromIndexSignature": true,
     "strictNullChecks": true,
     "declaration": true,
     "declarationMap": true,
@@ -29,7 +29,14 @@
     "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
+    "noEmitOnError": true,
+    "preserveConstEnums": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "tsBuildInfoFile": "buildcache/.tsbuildinfo"
   },
   "include": ["src", "tests"],
   "exclude": ["node_modules", "dist"]

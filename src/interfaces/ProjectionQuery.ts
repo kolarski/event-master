@@ -1,8 +1,8 @@
 import type { BaseEventType } from "../events/base.event.js";
 
-export type ProjectionQuery<Event extends BaseEventType> = {
+export interface ProjectionQuery<Event extends BaseEventType> {
   streamId?: Event["streamId"];
-  eventTypes?: Event["type"][];
+  eventTypes?: Array<Event["type"]>;
   payload?: Record<string, unknown>;
   createdAt?: { from?: Date; to?: Date };
-};
+}

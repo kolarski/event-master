@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "lint": "eslint --fix",
-    "prepublishOnly": "npm run build"
+    "check": "bun test && bun run build && bun run lint",
+    "prepublishOnly": "bun run build"
   },
   "publishConfig": {
     "access": "public"

@@ -5,7 +5,7 @@ import type { SubscriptionQuery } from "./interfaces/SubscriptionQuery.js";
 import { VoidLogger } from "./loggers/Void.logger.js";
 
 export class EventBus<Event extends BaseEventType> {
-  private handlers: EventHandler<Event>[] = [];
+  private handlers: Array<EventHandler<Event>> = [];
   private logger: Logger<Event>;
 
   constructor(logger: Logger<Event> = new VoidLogger()) {

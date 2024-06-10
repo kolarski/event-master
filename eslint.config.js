@@ -21,6 +21,8 @@ export default [
     rules: {
       ...pluginJs.configs.all.rules,
       ...tseslint.configs.recommended.rules,
+      ...tseslint.configs.strict.rules,
+      ...tseslint.configs.stylistic.rules,
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -38,9 +40,10 @@ export default [
       "sort-imports": "off",
       "no-magic-numbers": "off",
       "id-length": "off",
-      "no-empty-function": "off",
       "class-methods-use-this": "off",
       "no-ternary": "off",
+      "one-var": "off",
+      "@typescript-eslint/array-type": ["warn", { default: "generic" }],
     },
   },
   {
