@@ -98,6 +98,9 @@ export class InMemoryRepository<Event extends BaseEventType>
   public async emitEvent(event: Event): Promise<void> {
     const unlock = await this.seqMutex.lock();
     try {
+      if (this.events.some((e) => e.id === event.id)) {
+        throw new Error(`Event with id ${event.id} already exists`);
+      }
       this.currentSeq += 1;
       event.seq = this.currentSeq;
       this.events.push(event);

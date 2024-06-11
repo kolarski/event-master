@@ -91,7 +91,7 @@ test("Emit Invalid Event - 2", async () => {
   expect(em.emit(invalidEvent as any)).rejects.toThrow();
 });
 
-test.skip("Emit Event with Same ID Twice", async () => {
+test("Emit Event with Same ID Twice", async () => {
   const uuidString = uuid();
   const event: EventInputType = {
     id: uuidString,
