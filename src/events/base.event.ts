@@ -1,10 +1,8 @@
 import { z } from "zod";
 
 export const baseEvent = z.object({
-  id: z
-    .string()
-    .uuid()
-    .default(() => crypto.randomUUID()),
+  id: z.string().uuid(),
+  // .default(() => crypto.randomUUID()),
   entityId: z.string().uuid().optional(),
   seq: z
     .number()

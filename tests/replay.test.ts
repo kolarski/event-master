@@ -6,6 +6,7 @@ import {
   type EventType,
 } from "./__mocks__/events";
 import { PageVisitedEventUpgrader } from "./__mocks__/PageVisitedEventUpgrader";
+import { v4 as uuid } from "uuid";
 
 let em: EM<EventType, EventInputType>;
 let replay: EventType[] = [];
@@ -23,6 +24,7 @@ beforeEach(async () => {
 test("Replay with Multiple Event Types", async () => {
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -33,6 +35,7 @@ test("Replay with Multiple Event Types", async () => {
       },
     },
     {
+      id: uuid(),
       type: "broken-link",
       entityId: "page-1",
       payload: {
@@ -59,6 +62,7 @@ test("Replay with Multiple Event Types", async () => {
 
 test("Replay with No Matching Events", async () => {
   const event: EventInputType = {
+    id: uuid(),
     type: "page-visited",
     entityId: "page-1",
     payload: {
@@ -85,6 +89,7 @@ test("Replay with No Matching Events", async () => {
 test("Replay with Sequence Range", async () => {
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -95,6 +100,7 @@ test("Replay with Sequence Range", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -105,6 +111,7 @@ test("Replay with Sequence Range", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -134,6 +141,7 @@ test("Replay with Sequence Range", async () => {
 test("Replay with Sequence Range, and try to change seq. Should not be possible", async () => {
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -145,6 +153,7 @@ test("Replay with Sequence Range, and try to change seq. Should not be possible"
       seq: 1,
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -156,6 +165,7 @@ test("Replay with Sequence Range, and try to change seq. Should not be possible"
       seq: 2,
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -186,6 +196,7 @@ test("Replay with Sequence Range, and try to change seq. Should not be possible"
 test("Replay with Specific Payload", async () => {
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -196,6 +207,7 @@ test("Replay with Specific Payload", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -206,6 +218,7 @@ test("Replay with Specific Payload", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -236,6 +249,7 @@ test("Replay with CreatedAt Range", async () => {
   const now = new Date();
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -247,6 +261,7 @@ test("Replay with CreatedAt Range", async () => {
       createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -278,6 +293,7 @@ test("Replay with CreatedAt From and To Range", async () => {
   const now = new Date();
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -289,6 +305,7 @@ test("Replay with CreatedAt From and To Range", async () => {
       createdAt: new Date(now.getTime() - 20000), // 20 seconds ago
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -300,6 +317,7 @@ test("Replay with CreatedAt From and To Range", async () => {
       createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -334,6 +352,7 @@ test("Replay with Multiple Filters", async () => {
   const now = new Date();
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -345,6 +364,7 @@ test("Replay with Multiple Filters", async () => {
       createdAt: new Date(now.getTime() - 20000), // 20 seconds ago
     },
     {
+      id: uuid(),
       type: "broken-link",
       entityId: "page-1",
       payload: {
@@ -355,6 +375,7 @@ test("Replay with Multiple Filters", async () => {
       createdAt: new Date(now.getTime() - 15000), // 15 seconds ago
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -366,6 +387,7 @@ test("Replay with Multiple Filters", async () => {
       createdAt: new Date(now.getTime() - 10000), // 10 seconds ago
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-2",
       payload: {

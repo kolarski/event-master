@@ -1,0 +1,13 @@
+---
+name: Commit and push
+command: "git add -A && git commit -am \"{{message}}\"; git push"
+tags: []
+description: ~
+arguments:
+  - name: message
+    description: Commit message
+    default_value: ~
+source_url: ~
+author: ~
+author_url: ~
+shells: []

@@ -5,6 +5,7 @@ import {
   type EventInputType,
   type EventType,
 } from "./__mocks__/events";
+import { v4 as uuid } from "uuid";
 
 let em: EM<EventType, EventInputType>;
 
@@ -17,6 +18,7 @@ beforeEach(async () => {
 test("Emit Events and Check Streams", async () => {
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -27,6 +29,7 @@ test("Emit Events and Check Streams", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-2",
       payload: {
@@ -37,6 +40,7 @@ test("Emit Events and Check Streams", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -69,6 +73,7 @@ test("Emit Events and Check Streams", async () => {
 
   expect(
     em.emit({
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       expectedLastEntitySeq: 0,
@@ -82,6 +87,7 @@ test("Emit Events and Check Streams", async () => {
   ).rejects.toThrow();
 
   await em.emit({
+    id: uuid(),
     type: "page-visited",
     entityId: "page-1",
     expectedLastEntitySeq: 2,
@@ -112,6 +118,7 @@ test("Emit Events and Check Streams", async () => {
 test("Emit Events in Reverse Order and Check Streams", async () => {
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-2",
       payload: {
@@ -122,6 +129,7 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -132,6 +140,7 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -163,6 +172,7 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
   ]);
 
   await em.emit({
+    id: uuid(),
     type: "page-visited",
     entityId: "page-2",
     expectedLastEntitySeq: 0,

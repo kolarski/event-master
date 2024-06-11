@@ -5,6 +5,7 @@ import {
   type EventInputType,
   type EventType,
 } from "./__mocks__/events";
+import { v4 as uuid } from "uuid";
 
 let em: EM<EventType, EventInputType>;
 let capturedLogs: string[] = [];
@@ -27,6 +28,7 @@ test("Basic Event Bus", async () => {
     }
   });
   const event: EventInputType = {
+    id: uuid(),
     type: "page-visited",
     entityId: "page-1",
     payload: {
@@ -47,6 +49,7 @@ test("Basic Event Bus", async () => {
 test("Emit only after subscription", async () => {
   const constant_date = new Date().toISOString();
   const event: EventInputType = {
+    id: uuid(),
     type: "page-visited",
     entityId: "page-1",
     payload: {
@@ -66,6 +69,7 @@ test("Emit only after subscription", async () => {
     }
   });
   const event2: EventInputType = {
+    id: uuid(),
     type: "page-visited",
     entityId: "page-1",
     payload: {
@@ -86,6 +90,7 @@ test("Emit only after subscription", async () => {
 test("Persistant subscription", async () => {
   const constant_date = new Date().toISOString();
   const event: EventInputType = {
+    id: uuid(),
     type: "page-visited",
     entityId: "page-1",
     payload: {
@@ -105,6 +110,7 @@ test("Persistant subscription", async () => {
     }
   });
   const event2: EventInputType = {
+    id: uuid(),
     type: "page-visited",
     entityId: "page-1",
     payload: {

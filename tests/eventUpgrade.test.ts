@@ -6,6 +6,7 @@ import {
   type EventType,
 } from "./__mocks__/events";
 import { PageVisitedEventUpgrader } from "./__mocks__/PageVisitedEventUpgrader";
+import { v4 as uuid } from "uuid";
 
 let em: EM<EventType, EventInputType>;
 let replay: EventType[] = [];
@@ -22,6 +23,7 @@ beforeEach(async () => {
 
 test("Event Upgrading", async () => {
   const oldEvent: EventInputType = {
+    id: uuid(),
     type: "page-visited",
     entityId: "page-1",
     payload: {

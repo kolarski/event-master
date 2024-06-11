@@ -5,6 +5,7 @@ import {
   type EventInputType,
   type EventType,
 } from "./__mocks__/events";
+import { v4 as uuid } from "uuid";
 
 let em: EM<EventType, EventInputType>;
 
@@ -17,6 +18,7 @@ beforeEach(async () => {
 test("Emit Events and Validate Emission", async () => {
   const events: EventInputType[] = [
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -27,6 +29,7 @@ test("Emit Events and Validate Emission", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-2",
       payload: {
@@ -37,6 +40,7 @@ test("Emit Events and Validate Emission", async () => {
       },
     },
     {
+      id: uuid(),
       type: "page-visited",
       entityId: "page-1",
       payload: {
@@ -57,6 +61,7 @@ test("Emit Events and Validate Emission", async () => {
 
 test("Emit Invalid Event", async () => {
   const invalidEvent = {
+    id: uuid(),
     type: "invalid-type",
     entityId: "page-1",
     payload: {
@@ -72,6 +77,7 @@ test("Emit Invalid Event", async () => {
 
 test("Emit Invalid Event - 2", async () => {
   const invalidEvent = {
+    id: uuid(),
     type: "page-visited",
     entityId: 42,
     payload: {
@@ -83,6 +89,24 @@ test("Emit Invalid Event - 2", async () => {
   };
 
   expect(em.emit(invalidEvent as any)).rejects.toThrow();
+});
+
+test.skip("Emit Event with Same ID Twice", async () => {
+  const uuidString = uuid();
+  const event: EventInputType = {
+    id: uuidString,
+    type: "page-visited",
+    entityId: "page-1",
+    payload: {
+      url: "https://example.com",
+      visitedDate: new Date().toISOString(),
+      html: "<html></html>",
+      htmlStatus: 200,
+    },
+  };
+
+  await em.emit(event);
+  expect(em.emit(event)).rejects.toThrow();
 });
 
 // Fake test for `subscribeToStream`

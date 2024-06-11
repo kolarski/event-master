@@ -81,6 +81,17 @@ export class EM<
   }
 
   /**
+   * Emit multiple events after parsing and applying upgrades.
+   * @param events - The events to emit.
+   */
+  public async emitEvents(events: Array<InputEvent>): Promise<void> {
+    for (const event of events) {
+      // eslint-disable-next-line no-await-in-loop
+      await this.emit(event);
+    }
+  }
+
+  /**
    * Emit an event after parsing and applying upgrades.
    * @param event - The event to emit.
    * @throws Will throw an error if the event emission fails.

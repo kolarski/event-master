@@ -34,9 +34,7 @@
     "noImplicitOverride": true,
     "noEmitOnError": true,
     "preserveConstEnums": true,
-    "isolatedModules": true,
-    "incremental": true,
-    "tsBuildInfoFile": "buildcache/.tsbuildinfo"
+    "isolatedModules": true
   },
   "include": ["src", "tests"],
   "exclude": ["node_modules", "dist"]
