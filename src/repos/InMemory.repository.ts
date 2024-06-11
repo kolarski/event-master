@@ -100,7 +100,7 @@ export class InMemoryRepository<Event extends BaseEventType>
       this.currentSeq += 1;
       event.seq = this.currentSeq;
       this.events.push(event);
-      this.updateStream(event);
+      this.updateEntityStream(event);
     } finally {
       unlock();
     }
@@ -118,7 +118,7 @@ export class InMemoryRepository<Event extends BaseEventType>
     }
   }
 
-  private updateStream(event: Event): void {
+  private updateEntityStream(event: Event): void {
     if (event.entityId) {
       const index = this.streams.findIndex((s) => s.id === event.entityId);
       if (index === -1) {
@@ -133,11 +133,11 @@ export class InMemoryRepository<Event extends BaseEventType>
           throw new Error("Stream not found");
         }
         if (
-          typeof event.expectedStreamSeq !== "undefined" &&
-          stream.seq !== event.expectedStreamSeq
+          typeof event.expectedLastEntityId !== "undefined" &&
+          stream.seq !== event.expectedLastEntityId
         ) {
           throw new Error(
-            `Cannot emit event with expectedStreamSeq = ${event.expectedStreamSeq}. Stream has seq = ${stream.seq}`
+            `Cannot emit event with expectedLastEntityId = ${event.expectedLastEntityId}. Stream has seq = ${stream.seq}`
           );
         }
         stream.seq += 1;

@@ -15,7 +15,7 @@ export const baseEvent = z.object({
     .optional()
     .default(0)
     .describe("Unique auto-incrementing sequence number for each event"),
-  expectedStreamSeq: z
+  expectedLastEntityId: z
     .number()
     .safe()
     .finite()

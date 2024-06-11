@@ -69,7 +69,7 @@ test("Emit Events and Check Streams", async () => {
     em.emit({
       type: "page-visited",
       entityId: "page-1",
-      expectedStreamSeq: 0,
+      expectedLastEntityId: 0,
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -82,7 +82,7 @@ test("Emit Events and Check Streams", async () => {
   await em.emit({
     type: "page-visited",
     entityId: "page-1",
-    expectedStreamSeq: 1,
+    expectedLastEntityId: 1,
     payload: {
       url: "https://example.com",
       visitedDate: new Date().toISOString(),
@@ -159,7 +159,7 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
   await em.emit({
     type: "page-visited",
     entityId: "page-2",
-    expectedStreamSeq: 0,
+    expectedLastEntityId: 0,
     payload: {
       url: "https://example.com/page2",
       visitedDate: new Date().toISOString(),
