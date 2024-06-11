@@ -19,6 +19,8 @@
 
 ## Long term goals
 
+- [ ] Documentation
+  - [ ] Provide detailed documentation how to use the library so that plugins can be easily developed using the library
 - [ ] Upgrade / downgrade events
   - [ ] Check for the upgrader for idempotency
   - [ ] Add ability to migrate the event to persistant next version, but veryfy downgrades are idempotent so you can always get back
