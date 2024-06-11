@@ -7,7 +7,7 @@ import type { EventUpgrader } from "./interfaces/Upgrader.interface.js";
 import { EventBus } from "./EventBus.js";
 import type { ReplayQuery } from "./interfaces/ReplayQuery.js";
 import { InMemoryRepository } from "./repos/InMemory.repository.js";
-import type { Stream } from "./interfaces/Stream.interface.js";
+import type { EntityStream } from "./interfaces/EntityStream.interface.js";
 import type { EventHandler } from "./interfaces/EventHandler.type.js";
 import type { SubscriptionQuery } from "./interfaces/SubscriptionQuery.js";
 
@@ -126,8 +126,8 @@ export class EM<
     }
   }
 
-  public getAllStreams(): AsyncIterable<Stream> {
-    return this.repo.getAllStreams();
+  public getAllEntityStreams(): AsyncIterable<EntityStream<Event>> {
+    return this.repo.getAllEntityStreams();
   }
 
   public getAllEvents(): AsyncIterable<Readonly<Event>> {

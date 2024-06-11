@@ -52,16 +52,18 @@ test("Emit Events and Check Streams", async () => {
     await em.emit(event);
   }
 
-  expect(await Array.fromAsync(em.getAllStreams())).toStrictEqual([
+  expect(await Array.fromAsync(em.getAllEntityStreams())).toStrictEqual([
     {
       id: "page-1",
-      seq: 1,
-      type: "page-visited",
+      entityId: "page-1",
+      lastEventSeq: 2,
+      eventTypes: ["page-visited"],
     },
     {
       id: "page-2",
-      seq: 0,
-      type: "page-visited",
+      entityId: "page-2",
+      lastEventSeq: 1,
+      eventTypes: ["page-visited"],
     },
   ]);
 
@@ -69,7 +71,7 @@ test("Emit Events and Check Streams", async () => {
     em.emit({
       type: "page-visited",
       entityId: "page-1",
-      expectedLastEntityId: 0,
+      expectedLastEntitySeq: 0,
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -82,7 +84,7 @@ test("Emit Events and Check Streams", async () => {
   await em.emit({
     type: "page-visited",
     entityId: "page-1",
-    expectedLastEntityId: 1,
+    expectedLastEntitySeq: 2,
     payload: {
       url: "https://example.com",
       visitedDate: new Date().toISOString(),
@@ -91,16 +93,18 @@ test("Emit Events and Check Streams", async () => {
     },
   });
 
-  expect(await Array.fromAsync(em.getAllStreams())).toStrictEqual([
+  expect(await Array.fromAsync(em.getAllEntityStreams())).toStrictEqual([
     {
       id: "page-1",
-      seq: 2,
-      type: "page-visited",
+      entityId: "page-1",
+      lastEventSeq: 4,
+      eventTypes: ["page-visited"],
     },
     {
       id: "page-2",
-      seq: 0,
-      type: "page-visited",
+      entityId: "page-2",
+      lastEventSeq: 1,
+      eventTypes: ["page-visited"],
     },
   ]);
 });
@@ -143,23 +147,25 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
     await em.emit(event);
   }
 
-  expect(await Array.fromAsync(em.getAllStreams())).toStrictEqual([
+  expect(await Array.fromAsync(em.getAllEntityStreams())).toStrictEqual([
     {
       id: "page-2",
-      seq: 0,
-      type: "page-visited",
+      entityId: "page-2",
+      lastEventSeq: 0,
+      eventTypes: ["page-visited"],
     },
     {
       id: "page-1",
-      seq: 1,
-      type: "page-visited",
+      entityId: "page-1",
+      lastEventSeq: 2,
+      eventTypes: ["page-visited"],
     },
   ]);
 
   await em.emit({
     type: "page-visited",
     entityId: "page-2",
-    expectedLastEntityId: 0,
+    expectedLastEntitySeq: 0,
     payload: {
       url: "https://example.com/page2",
       visitedDate: new Date().toISOString(),
@@ -168,16 +174,18 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
     },
   });
 
-  expect(await Array.fromAsync(em.getAllStreams())).toStrictEqual([
+  expect(await Array.fromAsync(em.getAllEntityStreams())).toStrictEqual([
     {
       id: "page-2",
-      seq: 1,
-      type: "page-visited",
+      entityId: "page-2",
+      lastEventSeq: 3,
+      eventTypes: ["page-visited"],
     },
     {
       id: "page-1",
-      seq: 1,
-      type: "page-visited",
+      entityId: "page-1",
+      lastEventSeq: 2,
+      eventTypes: ["page-visited"],
     },
   ]);
 });

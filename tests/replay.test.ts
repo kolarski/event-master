@@ -93,6 +93,55 @@ test("Replay with Sequence Range", async () => {
         html: "<html></html>",
         htmlStatus: 200,
       },
+    },
+    {
+      type: "page-visited",
+      entityId: "page-1",
+      payload: {
+        url: "https://example.com/page2",
+        visitedDate: new Date().toISOString(),
+        html: "<html>2</html>",
+        htmlStatus: 200,
+      },
+    },
+    {
+      type: "page-visited",
+      entityId: "page-1",
+      payload: {
+        url: "https://example.com/page3",
+        visitedDate: new Date().toISOString(),
+        html: "<html>3</html>",
+        htmlStatus: 200,
+      },
+    },
+  ];
+
+  for (const event of events) {
+    await em.emit(event);
+  }
+
+  for await (const event of em.replay({
+    entityId: "page-1",
+    seq: { from: 1, to: 2 },
+  })) {
+    replay.push(event);
+  }
+
+  expect(replay.length).toBe(2);
+  expect(replay.map((e) => e.seq)).toStrictEqual([1, 2]);
+});
+
+test("Replay with Sequence Range, and try to change seq. Should not be possible", async () => {
+  const events: EventInputType[] = [
+    {
+      type: "page-visited",
+      entityId: "page-1",
+      payload: {
+        url: "https://example.com",
+        visitedDate: new Date().toISOString(),
+        html: "<html></html>",
+        htmlStatus: 200,
+      },
       seq: 1,
     },
     {
@@ -130,10 +179,10 @@ test("Replay with Sequence Range", async () => {
     replay.push(event);
   }
 
-  expect(replay.length).toBe(2);
-  expect(replay.map((e) => e.seq)).toStrictEqual([2, 3]);
+  // Events have seq 0, 1, 2, not 1, 2, 3 as defined
+  expect(replay.length).toBe(1);
+  expect(replay.map((e) => e.seq)).toStrictEqual([2]);
 });
-
 test("Replay with Specific Payload", async () => {
   const events: EventInputType[] = [
     {

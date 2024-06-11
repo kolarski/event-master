@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "lint": "eslint --fix",
-    "check": "bun test && bun run build && bun run lint",
+    "check": "bun run build && bun run lint && bun test",
     "prepublishOnly": "bun run build"
   },
   "publishConfig": {

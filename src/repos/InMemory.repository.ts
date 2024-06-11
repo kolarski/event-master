@@ -1,7 +1,7 @@
 import type { BaseEventType } from "../events/base.event";
 import type { ReplayQuery } from "../interfaces/ReplayQuery";
 import type { Repository } from "../interfaces/Repository.interface";
-import type { Stream } from "../interfaces/Stream.interface";
+import type { EntityStream } from "../interfaces/EntityStream.interface";
 import { Mutex } from "../utils/Mutex";
 
 /**
@@ -11,8 +11,9 @@ export class InMemoryRepository<Event extends BaseEventType>
   implements Repository<Event>
 {
   private events: Array<Readonly<Event>> = [];
-  private streams: Array<Stream> = [];
-  private currentSeq = 0;
+  private streams: Array<EntityStream<Event>> = [];
+  // Current sequence number starts at -1 so that the first event will have a sequence number of 0
+  private currentSeq = -1;
   private seqMutex = new Mutex();
 
   async validateEventsTable(): Promise<void> {
@@ -112,7 +113,7 @@ export class InMemoryRepository<Event extends BaseEventType>
     }
   }
 
-  public async *getAllStreams(): AsyncIterable<Stream> {
+  public async *getAllEntityStreams(): AsyncIterable<EntityStream<Event>> {
     for (const stream of this.streams) {
       yield stream;
     }
@@ -120,28 +121,28 @@ export class InMemoryRepository<Event extends BaseEventType>
 
   private updateEntityStream(event: Event): void {
     if (event.entityId) {
-      const index = this.streams.findIndex((s) => s.id === event.entityId);
-      if (index === -1) {
+      const stream = this.streams.find(
+        (s) =>
+          s.entityId === event.entityId && s.eventTypes.includes(event.type)
+      );
+      if (!stream) {
         this.streams.push({
           id: event.entityId,
-          type: event.type,
-          seq: 0,
+          entityId: event.entityId,
+          eventTypes: [event.type],
+          lastEventSeq: event.seq,
         });
-      } else {
-        const stream = this.streams[index];
-        if (!stream) {
-          throw new Error("Stream not found");
-        }
-        if (
-          typeof event.expectedLastEntityId !== "undefined" &&
-          stream.seq !== event.expectedLastEntityId
-        ) {
-          throw new Error(
-            `Cannot emit event with expectedLastEntityId = ${event.expectedLastEntityId}. Stream has seq = ${stream.seq}`
-          );
-        }
-        stream.seq += 1;
+        return;
       }
+      if (
+        typeof event.expectedLastEntitySeq !== "undefined" &&
+        stream.lastEventSeq !== event.expectedLastEntitySeq
+      ) {
+        throw new Error(
+          `Cannot emit event with expectedLastEntitySeq = ${event.expectedLastEntitySeq}. Stream has lastEventSeq = ${stream.lastEventSeq}`
+        );
+      }
+      stream.lastEventSeq = event.seq;
     }
   }
 
