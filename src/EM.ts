@@ -64,7 +64,7 @@ export class EM<
     this.repo = repository;
     this.upgraders = upgraders;
     this.logger = logger;
-    this.eventBus = new EventBus<Event>(this.logger);
+    this.eventBus = new EventBus<Event>(this.repo, this.logger);
   }
 
   public async init(): Promise<void> {

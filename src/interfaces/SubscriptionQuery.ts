@@ -1,9 +1,4 @@
 import type { BaseEventType } from "../events/base.event.js";
+import type { FilterQuery } from "./FilterQuery.js";
 
-export interface SubscriptionQuery<Event extends BaseEventType> {
-  seq?: { from?: number; to?: number };
-  entityId?: Event["entityId"];
-  eventTypes?: Array<Event["type"]>;
-  payload?: Record<string, unknown>;
-  createdAt?: { from?: Date; to?: Date };
-}
+export type SubscriptionQuery<E extends BaseEventType> = FilterQuery<E>;

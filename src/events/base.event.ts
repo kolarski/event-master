@@ -25,7 +25,13 @@ export const baseEvent = z.object({
   version: z.number().safe().finite().int().positive().default(1),
   createdAt: z.date().default(() => new Date()),
   payload: z.record(z.string(), z.unknown()),
-  metadata: z.record(z.string(), z.unknown()).default({}),
+  metadata: z
+    .object({
+      causationId: z.string().uuid().optional(),
+      userId: z.string().uuid().optional(),
+    })
+    .catchall(z.unknown())
+    .default({}),
 });
 
 export type BaseEventType = z.infer<typeof baseEvent>;

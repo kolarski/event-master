@@ -27,6 +27,10 @@ test("Emit Events and Validate Emission", async () => {
         html: "<html></html>",
         htmlStatus: 200,
       },
+      metadata: {
+        causationId: uuid(),
+        test: "bla",
+      },
     },
     {
       id: uuid(),

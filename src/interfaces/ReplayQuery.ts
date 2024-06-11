@@ -1,11 +1,7 @@
 import type { BaseEventType } from "../events/base.event.js";
+import type { FilterQuery } from "./FilterQuery.js";
 
-export interface ReplayQuery<Event extends BaseEventType> {
-  seq?: { from?: number; to?: number };
+export interface ReplayQuery<E extends BaseEventType> extends FilterQuery<E> {
   backwards?: boolean;
   limit?: number;
-  entityId?: Event["entityId"];
-  eventTypes?: Array<Event["type"]>;
-  payload?: Record<string, unknown>;
-  createdAt?: { from?: Date; to?: Date };
 }
