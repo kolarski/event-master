@@ -182,26 +182,11 @@ Custom loggers can be integrated by implementing the `Logger` interface and pass
 
 ```typescript
 import { EM } from "@kolarski/event-master";
-import type {
-  Logger,
-  ProjectionQuery,
-  BaseEventType,
-} from "@kolarski/event-master";
+import type { Logger, BaseEventType } from "@kolarski/event-master";
 
 class CustomLogger<Event extends BaseEventType> implements Logger<Event> {
   async logEvent(event: Event): Promise<void> {
     console.log(`Custom log: Event emitted - ${event.type}`);
-  }
-
-  async logProjectionItem(
-    query: ProjectionQuery<Event>,
-    event: Event
-  ): Promise<void> {
-    console.log(
-      `Custom log: Projection query - ${JSON.stringify(query)}, Event - ${
-        event.type
-      }`
-    );
   }
 }
 

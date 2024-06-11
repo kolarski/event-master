@@ -11,6 +11,7 @@ export default [
       parser: tsParser,
       parserOptions: {
         ecmaVersion: 2020,
+        warnOnUnsupportedTypeScriptVersion: false,
         sourceType: "module",
       },
     },

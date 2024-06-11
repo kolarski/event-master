@@ -14,8 +14,10 @@
     "build:production": "bun clean && tsc --project tsconfig.build.json",
     "build": "tsc --project tsconfig.json",
     "lint": "eslint --fix",
+    "test": "bun test --coverage",
     "check": "bun run build && bun run lint && bun test",
-    "prepublishOnly": "bun run build:production"
+    "prepublishOnly": "bun run build:production",
+    "find-deadcode": "ts-prune"
   },
   "publishConfig": {
     "access": "public"
@@ -23,14 +25,15 @@
   "devDependencies": {
     "@eslint/js": "^9.4.0",
     "@types/bun": "latest",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
     "eslint": "^9.4.0",
     "globals": "^15.4.0",
     "rimraf": "^5.0.7",
+    "ts-prune": "^0.10.3",
     "typescript": "5.5.0-beta",
     "typescript-eslint": "^7.13.0",
-    "@types/uuid": "^9.0.8",
     "uuid": "^10.0.0"
   },
   "dependencies": {

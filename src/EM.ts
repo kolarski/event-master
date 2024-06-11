@@ -133,7 +133,7 @@ export class EM<
     for await (const event of this.repo.replay(query)) {
       const upgradedEvent = this.applyUpgrades(event);
       yield upgradedEvent;
-      await this.logger.logProjectionItem(query, upgradedEvent);
+      await this.logger.logEvent(upgradedEvent);
     }
   }
 
