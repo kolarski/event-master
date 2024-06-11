@@ -18,7 +18,7 @@ test("Emit Events and Validate Emission", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -28,7 +28,7 @@ test("Emit Events and Validate Emission", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-2",
+      entityId: "page-2",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -38,7 +38,7 @@ test("Emit Events and Validate Emission", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -58,7 +58,7 @@ test("Emit Events and Validate Emission", async () => {
 test("Emit Invalid Event", async () => {
   const invalidEvent = {
     type: "invalid-type",
-    streamId: "page-1",
+    entityId: "page-1",
     payload: {
       url: "invalid-url",
       visitedDate: "not-a-date",
@@ -73,7 +73,7 @@ test("Emit Invalid Event", async () => {
 test("Emit Invalid Event - 2", async () => {
   const invalidEvent = {
     type: "page-visited",
-    streamId: 42,
+    entityId: 42,
     payload: {
       url: "invalid-url",
       visitedDate: "not-a-date",

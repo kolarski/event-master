@@ -4,7 +4,7 @@ import { baseEvent } from "./../../src/events/base.event";
 const PageVisitedEvent = baseEvent.extend({
   type: z.literal("page-visited"),
   version: z.literal(1).default(1),
-  streamId: z.string(),
+  entityId: z.string(),
   payload: z.object({
     url: z.string().url(),
     visitedDate: z.string().datetime(),
@@ -16,7 +16,7 @@ const PageVisitedEvent = baseEvent.extend({
 const PageVisitedV2Event = baseEvent.extend({
   type: z.literal("page-visited"),
   version: z.literal(2),
-  streamId: z.string(),
+  entityId: z.string(),
   payload: z.object({
     url: z.string().url(),
     visitedDate: z.string().datetime(),
@@ -29,7 +29,7 @@ const PageVisitedV2Event = baseEvent.extend({
 const BrokenLinkEvent = baseEvent.extend({
   type: z.literal("broken-link"),
   version: z.literal(1).default(1),
-  streamId: z.string(),
+  entityId: z.string(),
   payload: z.object({
     url: z.string().url(),
     visitedDate: z.string().datetime(),

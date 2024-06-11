@@ -18,7 +18,7 @@ test("Emit Events and Check Streams", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -28,7 +28,7 @@ test("Emit Events and Check Streams", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-2",
+      entityId: "page-2",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -38,7 +38,7 @@ test("Emit Events and Check Streams", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -68,7 +68,7 @@ test("Emit Events and Check Streams", async () => {
   expect(
     em.emit({
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       expectedStreamSeq: 0,
       payload: {
         url: "https://example.com",
@@ -81,7 +81,7 @@ test("Emit Events and Check Streams", async () => {
 
   await em.emit({
     type: "page-visited",
-    streamId: "page-1",
+    entityId: "page-1",
     expectedStreamSeq: 1,
     payload: {
       url: "https://example.com",
@@ -109,7 +109,7 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-2",
+      entityId: "page-2",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -119,7 +119,7 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -129,7 +129,7 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page1",
         visitedDate: new Date().toISOString(),
@@ -158,7 +158,7 @@ test("Emit Events in Reverse Order and Check Streams", async () => {
 
   await em.emit({
     type: "page-visited",
-    streamId: "page-2",
+    entityId: "page-2",
     expectedStreamSeq: 0,
     payload: {
       url: "https://example.com/page2",

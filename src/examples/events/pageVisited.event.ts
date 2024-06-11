@@ -5,7 +5,7 @@ export default baseEvent
   .extend({
     type: z.literal("page-visited"),
     version: z.literal(1).default(1),
-    streamId: z.string(),
+    entityId: z.string(),
     payload: z.object({
       url: z.string().url(),
       visitedDate: z.string().datetime(),

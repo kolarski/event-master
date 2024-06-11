@@ -28,7 +28,7 @@ test("Basic Event Bus", async () => {
   });
   const event: EventInputType = {
     type: "page-visited",
-    streamId: "page-1",
+    entityId: "page-1",
     payload: {
       url: "https://example.com",
       visitedDate: constant_date,
@@ -48,7 +48,7 @@ test("Emit only after subscription", async () => {
   const constant_date = new Date().toISOString();
   const event: EventInputType = {
     type: "page-visited",
-    streamId: "page-1",
+    entityId: "page-1",
     payload: {
       url: "https://example.com",
       visitedDate: constant_date,
@@ -67,7 +67,7 @@ test("Emit only after subscription", async () => {
   });
   const event2: EventInputType = {
     type: "page-visited",
-    streamId: "page-1",
+    entityId: "page-1",
     payload: {
       url: "https://example.com",
       visitedDate: constant_date,
@@ -87,7 +87,7 @@ test("Persistant subscription", async () => {
   const constant_date = new Date().toISOString();
   const event: EventInputType = {
     type: "page-visited",
-    streamId: "page-1",
+    entityId: "page-1",
     payload: {
       url: "https://example.com",
       visitedDate: constant_date,
@@ -106,7 +106,7 @@ test("Persistant subscription", async () => {
   });
   const event2: EventInputType = {
     type: "page-visited",
-    streamId: "page-1",
+    entityId: "page-1",
     payload: {
       url: "https://example.com",
       visitedDate: constant_date,

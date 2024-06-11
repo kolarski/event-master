@@ -23,7 +23,7 @@ beforeEach(async () => {
 test("Replay with No Matching Events", async () => {
   const event: EventInputType = {
     type: "page-visited",
-    streamId: "page-1",
+    entityId: "page-1",
     payload: {
       url: "https://example.com",
       visitedDate: new Date().toISOString(),
@@ -36,7 +36,7 @@ test("Replay with No Matching Events", async () => {
   await em.emit(event);
 
   for await (const event of em.replay({
-    streamId: "non-existing-id",
+    entityId: "non-existing-id",
     eventTypes: ["page-visited"],
   })) {
     replay.push(event);

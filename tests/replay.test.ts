@@ -24,7 +24,7 @@ test("Replay with Multiple Event Types", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -34,7 +34,7 @@ test("Replay with Multiple Event Types", async () => {
     },
     {
       type: "broken-link",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://bad-link.com",
         visitedDate: new Date().toISOString(),
@@ -48,7 +48,7 @@ test("Replay with Multiple Event Types", async () => {
   }
 
   for await (const event of em.replay({
-    streamId: "page-1",
+    entityId: "page-1",
     eventTypes: ["page-visited", "broken-link"],
   })) {
     replay.push(event);
@@ -60,7 +60,7 @@ test("Replay with Multiple Event Types", async () => {
 test("Replay with No Matching Events", async () => {
   const event: EventInputType = {
     type: "page-visited",
-    streamId: "page-1",
+    entityId: "page-1",
     payload: {
       url: "https://example.com",
       visitedDate: new Date().toISOString(),
@@ -73,7 +73,7 @@ test("Replay with No Matching Events", async () => {
   await em.emit(event);
 
   for await (const event of em.replay({
-    streamId: "non-existing-id",
+    entityId: "non-existing-id",
     eventTypes: ["page-visited"],
   })) {
     replay.push(event);
@@ -86,7 +86,7 @@ test("Replay with Sequence Range", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -97,7 +97,7 @@ test("Replay with Sequence Range", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page2",
         visitedDate: new Date().toISOString(),
@@ -108,7 +108,7 @@ test("Replay with Sequence Range", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page3",
         visitedDate: new Date().toISOString(),
@@ -124,7 +124,7 @@ test("Replay with Sequence Range", async () => {
   }
 
   for await (const event of em.replay({
-    streamId: "page-1",
+    entityId: "page-1",
     seq: { from: 2, to: 3 },
   })) {
     replay.push(event);
@@ -138,7 +138,7 @@ test("Replay with Specific Payload", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: new Date().toISOString(),
@@ -148,7 +148,7 @@ test("Replay with Specific Payload", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page2",
         visitedDate: new Date().toISOString(),
@@ -158,7 +158,7 @@ test("Replay with Specific Payload", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page3",
         visitedDate: new Date().toISOString(),
@@ -173,7 +173,7 @@ test("Replay with Specific Payload", async () => {
   }
 
   for await (const event of em.replay({
-    streamId: "page-1",
+    entityId: "page-1",
     payload: { url: "https://example.com/page2" },
   })) {
     replay.push(event);
@@ -188,7 +188,7 @@ test("Replay with CreatedAt Range", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: now.toISOString(),
@@ -199,7 +199,7 @@ test("Replay with CreatedAt Range", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page2",
         visitedDate: now.toISOString(),
@@ -215,7 +215,7 @@ test("Replay with CreatedAt Range", async () => {
   }
 
   for await (const event of em.replay({
-    streamId: "page-1",
+    entityId: "page-1",
     createdAt: { from: new Date(now.getTime() - 5000) }, // last 5 seconds
   })) {
     replay.push(event);
@@ -230,7 +230,7 @@ test("Replay with CreatedAt From and To Range", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: now.toISOString(),
@@ -241,7 +241,7 @@ test("Replay with CreatedAt From and To Range", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page2",
         visitedDate: now.toISOString(),
@@ -252,7 +252,7 @@ test("Replay with CreatedAt From and To Range", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page3",
         visitedDate: now.toISOString(),
@@ -268,7 +268,7 @@ test("Replay with CreatedAt From and To Range", async () => {
   }
 
   for await (const event of em.replay({
-    streamId: "page-1",
+    entityId: "page-1",
     createdAt: {
       from: new Date(now.getTime() - 15000),
       to: new Date(now.getTime() - 5000),
@@ -286,7 +286,7 @@ test("Replay with Multiple Filters", async () => {
   const events: EventInputType[] = [
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com",
         visitedDate: now.toISOString(),
@@ -297,7 +297,7 @@ test("Replay with Multiple Filters", async () => {
     },
     {
       type: "broken-link",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://bad-link.com",
         visitedDate: now.toISOString(),
@@ -307,7 +307,7 @@ test("Replay with Multiple Filters", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-1",
+      entityId: "page-1",
       payload: {
         url: "https://example.com/page2",
         visitedDate: now.toISOString(),
@@ -318,7 +318,7 @@ test("Replay with Multiple Filters", async () => {
     },
     {
       type: "page-visited",
-      streamId: "page-2",
+      entityId: "page-2",
       payload: {
         url: "https://example.com/page3",
         visitedDate: now.toISOString(),
@@ -334,7 +334,7 @@ test("Replay with Multiple Filters", async () => {
   }
 
   for await (const event of em.replay({
-    streamId: "page-1",
+    entityId: "page-1",
     eventTypes: ["page-visited"],
     seq: { from: 2 },
     createdAt: { from: new Date(now.getTime() - 15000) }, // last 15 seconds

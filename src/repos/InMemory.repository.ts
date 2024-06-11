@@ -37,7 +37,7 @@ export class InMemoryRepository<Event extends BaseEventType>
   private matchStreamId = (
     event: Readonly<Event>,
     query: ReplayQuery<Readonly<Event>>
-  ): boolean => !query.streamId || event.streamId === query.streamId;
+  ): boolean => !query.entityId || event.entityId === query.entityId;
 
   private matchSeqFrom = (
     event: Readonly<Event>,
@@ -119,11 +119,11 @@ export class InMemoryRepository<Event extends BaseEventType>
   }
 
   private updateStream(event: Event): void {
-    if (event.streamId) {
-      const index = this.streams.findIndex((s) => s.id === event.streamId);
+    if (event.entityId) {
+      const index = this.streams.findIndex((s) => s.id === event.entityId);
       if (index === -1) {
         this.streams.push({
-          id: event.streamId,
+          id: event.entityId,
           type: event.type,
           seq: 0,
         });

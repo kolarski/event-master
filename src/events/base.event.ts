@@ -5,7 +5,7 @@ export const baseEvent = z.object({
     .string()
     .uuid()
     .default(() => crypto.randomUUID()),
-  streamId: z.string().uuid().optional(),
+  entityId: z.string().uuid().optional(),
   seq: z
     .number()
     .safe()
@@ -27,6 +27,7 @@ export const baseEvent = z.object({
   version: z.number().safe().finite().int().positive().default(1),
   createdAt: z.date().default(() => new Date()),
   payload: z.record(z.string(), z.unknown()),
+  metadata: z.record(z.string(), z.unknown()).default({}),
 });
 
 export type BaseEventType = z.infer<typeof baseEvent>;

@@ -11,7 +11,7 @@ export class ConsoleLogger<Event extends BaseEventType>
   }
   public async logEvent(event: Event): Promise<void> {
     console.log(
-      `Event emitted: ${event.type} for ${event.streamId}: ${JSON.stringify(
+      `Event emitted: ${event.type} for ${event.entityId}: ${JSON.stringify(
         event.payload,
         null,
         4
