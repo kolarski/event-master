@@ -44,6 +44,8 @@ export default [
       "no-ternary": "off",
       "one-var": "off",
       "@typescript-eslint/array-type": ["warn", { default: "generic" }],
+      "no-shadow": "off",
+      "@typescript-eslint/no-shadow": ["error"],
     },
   },
   {

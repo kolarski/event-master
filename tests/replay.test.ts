@@ -416,3 +416,101 @@ test("Replay with Multiple Filters", async () => {
   expect(replay.length).toBe(1);
   expect(replay[0]?.payload.url).toBe("https://example.com/page2");
 });
+
+test("Replay backwards", async () => {
+  const now = new Date();
+  const uuid1 = uuid();
+  const uuid2 = uuid();
+  const uuid3 = uuid();
+  const uuid4 = uuid();
+  const events: EventInputType[] = [
+    {
+      id: uuid1,
+      type: "page-visited",
+      entityId: "page-1",
+      payload: {
+        url: "https://example.com",
+        visitedDate: now.toISOString(),
+        html: "<html></html>",
+        htmlStatus: 200,
+      },
+    },
+    {
+      id: uuid2,
+      type: "broken-link",
+      entityId: "page-1",
+      payload: {
+        url: "https://bad-link.com",
+        visitedDate: now.toISOString(),
+        htmlStatus: 404,
+      },
+    },
+    {
+      id: uuid3,
+      type: "page-visited",
+      entityId: "page-1",
+      payload: {
+        url: "https://example.com/page2",
+        visitedDate: now.toISOString(),
+        html: "<html>2</html>",
+        htmlStatus: 200,
+      },
+    },
+    {
+      id: uuid4,
+      type: "page-visited",
+      entityId: "page-2",
+      payload: {
+        url: "https://example.com/page3",
+        visitedDate: now.toISOString(),
+        html: "<html>3</html>",
+        htmlStatus: 200,
+      },
+    },
+  ];
+
+  for (const event of events) {
+    await em.emit(event);
+  }
+
+  const replay1 = [];
+  for await (const event of em.replay({
+    backwards: true,
+  })) {
+    replay1.push(event);
+  }
+
+  expect(replay1.length).toBe(4);
+  expect(replay1.map((r) => r.id)).toStrictEqual([uuid4, uuid3, uuid2, uuid1]);
+
+  const replay2 = [];
+  for await (const event of em.replay({
+    backwards: false,
+  })) {
+    replay2.push(event);
+  }
+
+  expect(replay2.length).toBe(4);
+  expect(replay2.map((r) => r.id)).toStrictEqual([uuid1, uuid2, uuid3, uuid4]);
+
+  const replay3 = [];
+  for await (const event of em.replay({
+    backwards: true,
+    limit: 2,
+  })) {
+    replay3.push(event);
+  }
+
+  expect(replay3.length).toBe(2);
+  expect(replay3.map((r) => r.id)).toStrictEqual([uuid4, uuid3]);
+
+  const replay4 = [];
+  for await (const event of em.replay({
+    limit: 22,
+  })) {
+    replay4.push(event);
+  }
+
+  expect(replay4.length).toBe(4);
+  expect(replay4.map((r) => r.id)).toStrictEqual([uuid1, uuid2, uuid3, uuid4]);
+});

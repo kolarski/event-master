@@ -10,18 +10,18 @@ import { Mutex } from "../utils/Mutex";
 export class InMemoryRepository<Event extends BaseEventType>
   implements Repository<Event>
 {
-  private events: Array<Readonly<Event>> = [];
-  private streams: Array<EntityStream<Event>> = [];
+  private readonly events: Array<Readonly<Event>> = [];
+  private readonly streams: Array<EntityStream<Event>> = [];
   // Current sequence number starts at -1 so that the first event will have a sequence number of 0
   private currentSeq = -1;
-  private seqMutex = new Mutex();
+  private readonly seqMutex = new Mutex();
 
   async validateEventsTable(): Promise<void> {
-    this.events = [];
+    // Skip this.events = [];
   }
 
   async validateStreamsTable(): Promise<void> {
-    this.streams = [];
+    // Skip this.streams = [];
   }
   private doesEventMatchQuery(
     query: ReplayQuery<Readonly<Event>>
@@ -84,12 +84,17 @@ export class InMemoryRepository<Event extends BaseEventType>
   async *replay(
     query: ReplayQuery<Readonly<Event>>
   ): AsyncIterable<Readonly<Event>> {
-    const filteredEvents = this.events.filter(this.doesEventMatchQuery(query)),
-      sortedEvents = filteredEvents.sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
-
+    const filteredEvents = this.events.filter(this.doesEventMatchQuery(query));
+    let sortedEvents = filteredEvents.sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    if (query.backwards === true) {
+      sortedEvents.reverse();
+    }
+    if (query.limit) {
+      sortedEvents = sortedEvents.slice(0, query.limit);
+    }
     for (const event of sortedEvents) {
       yield event;
     }
