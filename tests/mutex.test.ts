@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import { Mutex } from "../src/utils/Mutex";
 
 describe("Mutex", () => {

@@ -14,7 +14,8 @@
     "build:production": "bun clean && tsc --project tsconfig.build.json",
     "build": "tsc --project tsconfig.json",
     "lint": "eslint --fix",
-    "test": "bun test --coverage",
+    "test": "vitest --dir tests",
+    "test:mutants": "stryker run",
     "check": "bun run build && bun run lint && bun test",
     "prepublishOnly": "bun run build:production",
     "find-deadcode": "ts-prune"
@@ -24,11 +25,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",
+    "@stryker-mutator/vitest-runner": "^8.2.6",
     "@types/bun": "latest",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
-    "eslint": "^9.4.0",
+    "eslint": "^8.0.0",
     "globals": "^15.4.0",
     "rimraf": "^5.0.7",
     "ts-prune": "^0.10.3",
@@ -37,6 +39,8 @@
     "uuid": "^10.0.0"
   },
   "dependencies": {
+    "array-from-async": "^3.0.0",
+    "vitest": "^1.6.0",
     "zod": "^3.23.8"
   }
 }

@@ -1,4 +1,4 @@
-import { expect, test, beforeEach } from "bun:test";
+import { expect, test, beforeEach } from "vitest";
 import { EM } from "./../src/EM";
 import {
   eventSchema,
